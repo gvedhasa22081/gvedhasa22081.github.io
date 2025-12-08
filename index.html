@@ -15,7 +15,7 @@
     overflow-x: hidden;
   }
 
-  /* Glow Background */
+  /* Background */
   .bg {
     position: fixed;
     inset: 0;
@@ -31,82 +31,66 @@
     to   { filter: hue-rotate(160deg); }
   }
 
-  .title {
+  h1 {
     text-align: center;
-    padding: 20px 0 10px;
+    padding: 20px 0 5px;
     font-size: 28px;
-    font-weight: 700;
-    letter-spacing: 1px;
     color: #22d3ee;
-    text-shadow: 0 0 18px #22d3ee;
-  }
-
-  .subtitle {
-    text-align: center;
-    color: #9ca3af;
-    margin-bottom: 20px;
+    font-weight: 700;
+    text-shadow: 0 0 16px #22d3ee;
   }
 
   .tracklist {
     width: 92%;
     max-width: 700px;
     margin: 0 auto;
+    margin-top: 20px;
   }
 
   .track {
     padding: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     border-radius: 14px;
-    background: rgba(15, 23, 42, 0.85);
+    background: rgba(15, 23, 42, 0.88);
     border: 1px solid #334155;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    transition: 0.2s ease;
+    cursor: pointer;
+    transition: 0.2s;
   }
-
   .track:hover {
     border-color: #22d3ee;
-    box-shadow: 0 0 12px #22d3ee99;
+    box-shadow: 0 0 12px #22d3ee88;
   }
 
-  .track-title {
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .track-sub {
-    font-size: 11px;
-    color: #94a3b8;
-  }
+  .track-title { font-size: 15px; font-weight: 600; }
+  .track-sub { font-size: 11px; color: #94a3b8; }
 
-  /* Bottom Music Player */
+  /* BOTTOM PLAYER */
   .player {
     position: fixed;
-    bottom: 12px;
+    bottom: 14px;
     left: 50%;
     transform: translateX(-50%);
     width: min(92%, 700px);
-    background: rgba(15, 23, 42, 0.92);
-    border: 1px solid #22d3ee;
+    padding: 12px 18px;
     border-radius: 60px;
-    padding: 10px 18px;
+    background: rgba(15,23,42,0.92);
+    border: 1px solid #22d3ee;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 0 18px #22d3ee66;
   }
 
-  .now-info {
-    display: flex;
-    flex-direction: column;
-  }
+  .now-info span { display: block; }
   .now-label {
     font-size: 10px;
     letter-spacing: 2px;
     color: #38bdf8;
   }
-  .now-song {
-    font-size: 14px;
+  .now-title {
+    font-size: 15px;
     font-weight: 700;
   }
   .now-sub {
@@ -114,45 +98,38 @@
     color: #94a3b8;
   }
 
-  .controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .controls { display: flex; gap: 10px; }
 
-  /* PLAY BUTTON — Blue Glow */
+  /* Neon PLAY button */
   .play-btn {
-    width: 42px;
-    height: 42px;
-    background: #0ea5e9;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
+    background: #0ea5e9;
     color: white;
     font-size: 20px;
     border: none;
     cursor: pointer;
     box-shadow: 0 0 16px #0ea5e9;
-    transition: 0.2s ease;
-  }
-  .play-btn:hover {
-    transform: scale(1.07);
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  /* PAUSE BUTTON — Green Glow */
+  /* Neon PAUSE button */
   .pause-btn {
-    width: 42px;
-    height: 42px;
-    background: #22c55e;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
+    background: #22c55e;
     color: white;
     font-size: 20px;
     border: none;
     cursor: pointer;
-    box-shadow: 0 0 16px #22c55e;
-    transition: 0.2s ease;
     display: none;
-  }
-  .pause-btn:hover {
-    transform: scale(1.07);
+    box-shadow: 0 0 16px #22c55e;
+    justify-content: center;
+    align-items: center;
   }
 
   audio { display: none; }
@@ -162,13 +139,16 @@
 <body>
 <div class="bg"></div>
 
-<h1 class="title">Listen With By GVS</h1>
-<p class="subtitle">Unique Neon Music Experience</p>
+<h1>Listen With By GVS</h1>
 
 <div class="tracklist">
 
-  <!-- Track 1 -->
-  <div class="track" onclick="playSong('Khaleja – Sada Siva (Epic BGM)', 'Listen it by GVS')">
+  <!-- TRACK 1 – Your MP3 -->
+  <div class="track" onclick="playSong(
+        'Khaleja – Sada Siva (Epic BGM)',
+        'Listen it by GVS',
+        'https://gvedhasa22081.github.io/Khaleja%20-%20Sada%20Siva%20Video%20with%20Lyrics%20Mahesh%20Babu,%20Anushka%20Manisarma.mp3'
+  )">
     <div>
       <div class="track-title">Khaleja – Sada Siva (Epic BGM)</div>
       <div class="track-sub">Listen it by GVS</div>
@@ -178,12 +158,11 @@
 
 </div>
 
-
-<!-- GLOBAL MINI PLAYER -->
+<!-- MINI PLAYER -->
 <div class="player">
   <div class="now-info">
     <span class="now-label">NOW PLAYING</span>
-    <span class="now-song" id="nowSong">No song selected</span>
+    <span class="now-title" id="nowTitle">No song selected</span>
     <span class="now-sub" id="nowSub">—</span>
   </div>
 
@@ -193,37 +172,37 @@
   </div>
 </div>
 
-<!-- Hidden Audio Player -->
-<audio id="audioPlayer">
-  <source src="https://gvedhasa22081.github.io/Khaleja%20-%20Sada%20Siva%20Video%20with%20Lyrics%20Mahesh%20Babu,%20Anushka%20Manisarma.mp3" type="audio/mpeg">
-</audio>
+<!-- AUDIO ELEMENT -->
+<audio id="audioPlayer"></audio>
 
 <script>
   const audio = document.getElementById("audioPlayer");
   const playBtn = document.getElementById("playBtn");
   const pauseBtn = document.getElementById("pauseBtn");
-  const nowSong = document.getElementById("nowSong");
+
+  const nowTitle = document.getElementById("nowTitle");
   const nowSub = document.getElementById("nowSub");
 
-  function playSong(title, subtitle) {
-    nowSong.textContent = title;
+  function playSong(title, subtitle, file) {
+    nowTitle.textContent = title;
     nowSub.textContent = subtitle;
 
+    audio.src = file;
     audio.play();
 
     playBtn.style.display = "none";
-    pauseBtn.style.display = "inline-block";
+    pauseBtn.style.display = "flex";
   }
 
   playBtn.onclick = () => {
     audio.play();
     playBtn.style.display = "none";
-    pauseBtn.style.display = "inline-block";
+    pauseBtn.style.display = "flex";
   };
 
   pauseBtn.onclick = () => {
     audio.pause();
-    playBtn.style.display = "inline-block";
+    playBtn.style.display = "flex";
     pauseBtn.style.display = "none";
   };
 </script>
