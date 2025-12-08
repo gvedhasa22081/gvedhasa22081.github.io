@@ -1,14 +1,417 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Watch IT BY GVS</title>
+    <meta charset="UTF-8" />
+    <title>Watch IT BY GVS – Salaar Album</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #050711;
+            color: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ---------- Animated particle-style background ---------- */
+        .bg-animation {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: -2;
+            background: radial-gradient(circle at 10% 20%, #1f2933 0, transparent 40%),
+                        radial-gradient(circle at 80% 0%, #0f766e 0, transparent 45%),
+                        radial-gradient(circle at 0% 100%, #7c2d12 0, transparent 40%);
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.7);
+            animation: floatUp linear infinite;
+        }
+
+        /* Create different speeds using nth-child */
+        .particle:nth-child(1) { left: 10%; animation-duration: 16s; }
+        .particle:nth-child(2) { left: 30%; animation-duration: 22s; }
+        .particle:nth-child(3) { left: 50%; animation-duration: 18s; }
+        .particle:nth-child(4) { left: 70%; animation-duration: 26s; }
+        .particle:nth-child(5) { left: 85%; animation-duration: 20s; }
+        .particle:nth-child(6) { left: 20%; animation-duration: 24s; }
+        .particle:nth-child(7) { left: 60%; animation-duration: 28s; }
+        .particle:nth-child(8) { left: 40%; animation-duration: 21s; }
+        .particle:nth-child(9) { left: 75%; animation-duration: 19s; }
+        .particle:nth-child(10){ left: 5%;  animation-duration: 23s; }
+
+        @keyframes floatUp {
+            0%   { transform: translateY(110vh) scale(0.7); opacity: 0; }
+            10%  { opacity: 1; }
+            90%  { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* overlay for soft dark layer */
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at top, rgba(0,0,0,0.3), rgba(0,0,0,0.9));
+            z-index: -1;
+        }
+
+        /* ---------- Layout ---------- */
+
+        .wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 16px 60px 16px;
+        }
+
+        /* Animated site title */
+        .logo-title {
+            font-size: clamp(32px, 5vw, 46px);
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #00eaff;
+            text-shadow: 0 0 16px #00eaff;
+            animation: glow 2s ease-in-out infinite alternate,
+                       slideUp 1.4s ease forwards;
+            opacity: 0;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #cbd5f5;
+            font-size: 14px;
+            margin-bottom: 18px;
+            opacity: 0.85;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #00eaff;
+                transform: scale(1);
+            }
+            to {
+                text-shadow: 0 0 26px #00fff7;
+                transform: scale(1.04);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(26px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Album banner */
+
+        .album-banner-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0 26px 0;
+        }
+
+        .album-banner {
+            width: 100%;
+            max-width: 520px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            box-shadow: 0 0 30px rgba(0,0,0,0.85);
+            animation: fadeIn 1.3s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to   { opacity: 1; transform: scale(1);   }
+        }
+
+        .section-title {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #e5e7eb;
+            text-align: left;
+        }
+
+        /* Song cards */
+
+        .songs-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .song-card {
+            background: radial-gradient(circle at top left, #1e293b 0, #020617 60%);
+            border-radius: 16px;
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            padding: 16px 14px 18px 14px;
+            box-shadow: 0 0 22px rgba(8, 47, 73, 0.9);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(10px);
+            opacity: 0;
+            animation: cardIn 0.8s ease forwards;
+        }
+
+        .song-card:nth-child(1) { animation-delay: 0.1s; }
+        .song-card:nth-child(2) { animation-delay: 0.25s; }
+        .song-card:nth-child(3) { animation-delay: 0.4s; }
+        .song-card:nth-child(4) { animation-delay: 0.55s; }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(26px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+
+        .song-card::before {
+            content: "";
+            position: absolute;
+            inset: -40%;
+            background:
+                radial-gradient(circle at 0% 0%, rgba(34,211,238,0.23), transparent 55%),
+                radial-gradient(circle at 100% 100%, rgba(248,113,113,0.15), transparent 55%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .song-card:hover::before {
+            opacity: 1;
+        }
+
+        .song-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .song-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e0f2fe;
+        }
+
+        .song-tag {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(96,165,250,0.7);
+            background: rgba(15,23,42,0.9);
+            color: #bfdbfe;
+        }
+
+        .song-meta {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 10px;
+            text-align: left;
+            position: relative;
+            z-index: 1;
+        }
+
+        .player-wrap {
+            position: relative;
+            z-index: 1;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+        }
+
+        iframe {
+            width: 100%;
+            height: 260px;
+            border: none;
+            display: block;
+        }
+
+        .song-actions {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            border: 1px solid rgba(59, 130, 246, 0.8);
+            background: linear-gradient(135deg, #0f172a, #1d283a);
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 11px;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            color: #e0f2fe;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+            background: linear-gradient(135deg, #1d283a, #0f172a);
+        }
+
+        .btn-outline {
+            border-color: rgba(148,163,184,0.8);
+            color: #cbd5f5;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 640px) {
+            .wrapper {
+                padding-inline: 10px;
+            }
+            iframe {
+                height: 210px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Welcome to Watch IT BY GVS</h1>
-    <p>Your video streaming website is now live!</p>
 
-    <!-- Add your video below -->
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe>
+    <!-- Animated background particles -->
+    <div class="bg-animation">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    <div class="bg-overlay"></div>
 
+    <main class="wrapper">
+        <h1 class="logo-title">WATCH IT BY GVS</h1>
+        <p class="subtitle">Salaar – Cinematic Music Session · Streaming via YouTube</p>
+
+        <div class="album-banner-wrap">
+            <img
+                class="album-banner"
+                src="https://assets.gadgets360cdn.com/pricee/assets/product/202312/Salaar_1703756034.jpg"
+                alt="Salaar Poster"
+            />
+        </div>
+
+        <h2 class="section-title">Salaar Official Songs</h2>
+
+        <section class="songs-grid">
+            <!-- Song 1 -->
+            <article class="song-card">
+                <div class="song-header">
+                    <h3 class="song-title">Sooraj Hi Chhaon Banke</h3>
+                    <span class="song-tag">Track 01</span>
+                </div>
+                <p class="song-meta">From the movie <strong>Salaar</strong> · YouTube embedded stream</p>
+                <div class="player-wrap">
+                    <iframe
+                        src="https://www.youtube.com/embed/2n7lsBRfmA0"
+                        title="Salaar Song 1"
+                        allowfullscreen
+                    ></iframe>
+                </div>
+                <div class="song-actions">
+                    <a class="btn btn-outline" href="https://youtu.be/2n7lsBRfmA0" target="_blank">Open on YouTube</a>
+                </div>
+            </article>
+
+            <!-- Song 2 -->
+            <article class="song-card">
+                <div class="song-header">
+                    <h3 class="song-title">Salaar Anthem / Mass Track</h3>
+                    <span class="song-tag">Track 02</span>
+                </div>
+                <p class="song-meta">High-energy theme for Salaar fans.</p>
+                <div class="player-wrap">
+                    <iframe
+                        src="https://www.youtube.com/embed/KGXSGtukDh0"
+                        title="Salaar Song 2"
+                        allowfullscreen
+                    ></iframe>
+                </div>
+                <div class="song-actions">
+                    <a class="btn btn-outline" href="https://youtu.be/KGXSGtukDh0" target="_blank">Open on YouTube</a>
+                </div>
+            </article>
+
+            <!-- Song 3 -->
+            <article class="song-card">
+                <div class="song-header">
+                    <h3 class="song-title">Emotional / Melodic Track</h3>
+                    <span class="song-tag">Track 03</span>
+                </div>
+                <p class="song-meta">Soft side of Salaar · Feel the mood.</p>
+                <div class="player-wrap">
+                    <iframe
+                        src="https://www.youtube.com/embed/bAg0BJXxX6U"
+                        title="Salaar Song 3"
+                        allowfullscreen
+                    ></iframe>
+                </div>
+                <div class="song-actions">
+                    <a class="btn btn-outline" href="https://youtu.be/bAg0BJXxX6U" target="_blank">Open on YouTube</a>
+                </div>
+            </article>
+
+            <!-- Song 4 -->
+            <article class="song-card">
+                <div class="song-header">
+                    <h3 class="song-title">Sound of Violence / Action Theme</h3>
+                    <span class="song-tag">Track 04</span>
+                </div>
+                <p class="song-meta">Hard-core action vibes · Perfect for mass scenes.</p>
+                <div class="player-wrap">
+                    <iframe
+                        src="https://www.youtube.com/embed/Z1QuBXVrUHU"
+                        title="Salaar Song 4"
+                        allowfullscreen
+                    ></iframe>
+                </div>
+                <div class="song-actions">
+                    <a class="btn btn-outline" href="https://youtu.be/Z1QuBXVrUHU" target="_blank">Open on YouTube</a>
+                </div>
+            </article>
+        </section>
+
+        <footer>
+            Watch IT BY GVS · Built with GitHub Pages · All videos stream from YouTube.
+        </footer>
+    </main>
 </body>
 </html>
