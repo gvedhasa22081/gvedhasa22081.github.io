@@ -15,7 +15,7 @@
     overflow-x: hidden;
   }
 
-  /* Background */
+  /* Background Glow */
   .bg {
     position: fixed;
     inset: 0;
@@ -26,6 +26,7 @@
     animation: hue 10s infinite alternate;
     z-index: -1;
   }
+
   @keyframes hue {
     from { filter: hue-rotate(0deg); }
     to   { filter: hue-rotate(160deg); }
@@ -33,11 +34,11 @@
 
   h1 {
     text-align: center;
-    padding: 20px 0 5px;
+    padding: 20px 0 10px;
     font-size: 28px;
     color: #22d3ee;
-    font-weight: 700;
     text-shadow: 0 0 16px #22d3ee;
+    font-weight: 700;
   }
 
   .tracklist {
@@ -58,6 +59,7 @@
     cursor: pointer;
     transition: 0.2s;
   }
+
   .track:hover {
     border-color: #22d3ee;
     box-shadow: 0 0 12px #22d3ee88;
@@ -66,7 +68,7 @@
   .track-title { font-size: 15px; font-weight: 600; }
   .track-sub { font-size: 11px; color: #94a3b8; }
 
-  /* BOTTOM PLAYER */
+  /* Bottom Player */
   .player {
     position: fixed;
     bottom: 14px;
@@ -147,13 +149,13 @@
   <div class="track" onclick="playSong(
         'Khaleja – Sada Siva (Epic BGM)',
         'Listen it by GVS',
-        'https://gvedhasa22081.github.io/Khaleja%20-%20Sada%20Siva%20Video%20with%20Lyrics%20Mahesh%20Babu,%20Anushka%20Manisarma.mp3'
+        'https://gvedhasa22081.github.io/khaleja_sada_siva_epic_bgm.mp3'
   )">
     <div>
       <div class="track-title">Khaleja – Sada Siva (Epic BGM)</div>
       <div class="track-sub">Listen it by GVS</div>
     </div>
-    <div style="font-size:20px; color:#22d3ee;">▶</div>
+    <div style='font-size:20px; color:#22d3ee;'>▶</div>
   </div>
 
 </div>
