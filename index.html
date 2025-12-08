@@ -10,12 +10,12 @@
   body {
     min-height: 100vh;
     background: #020617;
-    font-family: system-ui;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     color: white;
     overflow-x: hidden;
   }
 
-  /* Background Glow */
+  /* Neon background */
   .bg {
     position: fixed;
     inset: 0;
@@ -23,76 +23,169 @@
       radial-gradient(circle at 20% 0%, #22d3ee22, transparent),
       radial-gradient(circle at 80% 0%, #8b5cf622, transparent),
       radial-gradient(circle at 50% 100%, #f9731622, transparent);
-    animation: hue 10s infinite alternate;
+    animation: hue 12s infinite alternate;
     z-index: -1;
   }
-
   @keyframes hue {
     from { filter: hue-rotate(0deg); }
-    to   { filter: hue-rotate(160deg); }
+    to   { filter: hue-rotate(150deg); }
   }
 
   h1 {
     text-align: center;
-    padding: 20px 0 10px;
-    font-size: 28px;
+    padding: 18px 0 6px;
+    font-size: 26px;
     color: #22d3ee;
-    text-shadow: 0 0 16px #22d3ee;
     font-weight: 700;
+    text-shadow: 0 0 16px #22d3ee;
+  }
+  .sub {
+    text-align: center;
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 10px;
   }
 
-  .tracklist {
-    width: 92%;
-    max-width: 700px;
+  .layout {
+    width: 94%;
+    max-width: 960px;
     margin: 0 auto;
-    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 16px;
+    padding-bottom: 110px; /* space for bottom player */
+  }
+  @media (max-width: 780px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
   }
 
-  .track {
+  .panel {
+    background: rgba(15, 23, 42, 0.92);
+    border-radius: 16px;
+    border: 1px solid #1f2933;
     padding: 12px;
-    margin-bottom: 12px;
-    border-radius: 14px;
-    background: rgba(15, 23, 42, 0.88);
+    box-shadow: 0 0 12px #020617;
+  }
+
+  .panel-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .panel-sub {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-bottom: 8px;
+  }
+
+  /* Library tracks */
+  .track {
+    padding: 10px;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.9);
     border: 1px solid #334155;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
     cursor: pointer;
-    transition: 0.2s;
+    transition: 0.18s;
   }
-
   .track:hover {
     border-color: #22d3ee;
     box-shadow: 0 0 12px #22d3ee88;
   }
+  .track-left {
+    display: flex;
+    flex-direction: column;
+  }
+  .track-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .track-sub {
+    font-size: 11px;
+    color: #94a3b8;
+  }
+  .track-index {
+    font-size: 18px;
+    color: #22d3ee;
+    margin-left: 10px;
+  }
 
-  .track-title { font-size: 15px; font-weight: 600; }
-  .track-sub { font-size: 11px; color: #94a3b8; }
-
-  /* Bottom Player */
-  .player {
-    position: fixed;
-    bottom: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(92%, 700px);
-    padding: 12px 18px;
-    border-radius: 60px;
-    background: rgba(15,23,42,0.92);
-    border: 1px solid #22d3ee;
+  /* Queue list */
+  .queue-list {
+    list-style: none;
+    margin-top: 4px;
+  }
+  .queue-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 0 18px #22d3ee66;
+    font-size: 13px;
+    padding: 7px 8px;
+    border-radius: 10px;
+    border: 1px solid #1f2933;
+    margin-bottom: 6px;
+    background: rgba(15, 23, 42, 0.9);
+  }
+  .queue-buttons button {
+    font-size: 11px;
+    padding: 2px 6px;
+    margin-left: 4px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    background: #020617;
+    color: #e5e7eb;
+    cursor: pointer;
+  }
+  .queue-buttons button:hover {
+    border-color: #22d3ee;
+    color: #22d3ee;
+  }
+  .queue-reset {
+    margin-top: 4px;
+    font-size: 11px;
+    border-radius: 999px;
+    padding: 4px 10px;
+    border: 1px solid #22d3ee;
+    background: #020617;
+    color: #e0f2fe;
+    cursor: pointer;
+  }
+  .queue-reset:hover {
+    box-shadow: 0 0 10px #22d3ee88;
   }
 
+  /* Bottom player */
+  .player {
+    position: fixed;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(94%, 800px);
+    background: rgba(15,23,42,0.96);
+    border-radius: 20px;
+    border: 1px solid #22d3ee;
+    box-shadow: 0 0 20px #22d3ee66;
+    padding: 8px 12px 10px;
+  }
+
+  .player-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   .now-info span { display: block; }
   .now-label {
     font-size: 10px;
-    letter-spacing: 2px;
     color: #38bdf8;
+    letter-spacing: 2px;
   }
   .now-title {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
   }
   .now-sub {
@@ -100,38 +193,95 @@
     color: #94a3b8;
   }
 
-  .controls { display: flex; gap: 10px; }
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .small-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    border: 1px solid #64748b;
+    background: #020617;
+    color: #e5e7eb;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .small-btn:hover {
+    border-color: #22d3ee;
+    color: #22d3ee;
+  }
 
-  /* Neon PLAY button */
+  /* Neon PLAY */
   .play-btn {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: none;
     background: #0ea5e9;
     color: white;
     font-size: 20px;
-    border: none;
     cursor: pointer;
-    box-shadow: 0 0 16px #0ea5e9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    box-shadow: 0 0 18px #0ea5e9;
+  }
+  .play-btn:hover {
+    transform: scale(1.05);
   }
 
-  /* Neon PAUSE button */
+  /* Neon PAUSE */
   .pause-btn {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: none;
     background: #22c55e;
     color: white;
     font-size: 20px;
-    border: none;
     cursor: pointer;
+    box-shadow: 0 0 18px #22c55e;
     display: none;
-    box-shadow: 0 0 16px #22c55e;
-    justify-content: center;
+  }
+  .pause-btn:hover {
+    transform: scale(1.05);
+  }
+
+  /* Seek bar */
+  .seek-row {
+    display: flex;
     align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: #9ca3af;
+  }
+  .seek-row input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 999px;
+    background: #1f2937;
+    outline: none;
+  }
+  .seek-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #22d3ee;
+    box-shadow: 0 0 8px #22d3ee;
+    cursor: pointer;
+  }
+  .seek-row input[type="range"]::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #22d3ee;
+    border: none;
+    box-shadow: 0 0 8px #22d3ee;
+    cursor: pointer;
   }
 
   audio { display: none; }
@@ -142,71 +292,283 @@
 <div class="bg"></div>
 
 <h1>Listen With By GVS</h1>
+<p class="sub">Neon Music Player · Queue · Seek Bar · Next & Previous</p>
 
-<div class="tracklist">
+<div class="layout">
+  <!-- LEFT: SONG LIBRARY -->
+  <section class="panel">
+    <div class="panel-title">All Songs</div>
+    <div class="panel-sub">Tap a song to play it and jump to that position in the queue.</div>
+    <div id="libraryList"></div>
+  </section>
 
-  <!-- TRACK 1 – Your MP3 -->
-  <div class="track" onclick="playSong(
-        'Khaleja – Sada Siva (Epic BGM)',
-        'Listen it by GVS',
-        'https://gvedhasa22081.github.io/khaleja_sada_siva_epic_bgm.mp3'
-  )">
-    <div>
-      <div class="track-title">Khaleja – Sada Siva (Epic BGM)</div>
-      <div class="track-sub">Listen it by GVS</div>
-    </div>
-    <div style='font-size:20px; color:#22d3ee;'>▶</div>
-  </div>
-
+  <!-- RIGHT: QUEUE EDITOR -->
+  <section class="panel">
+    <div class="panel-title">Play Queue</div>
+    <div class="panel-sub">Use ↑ / ↓ to choose the order in which songs will play.</div>
+    <ul id="queueList" class="queue-list"></ul>
+    <button class="queue-reset" id="resetQueueBtn">Reset queue to original order</button>
+  </section>
 </div>
 
-<!-- MINI PLAYER -->
+<!-- BOTTOM PLAYER -->
 <div class="player">
-  <div class="now-info">
-    <span class="now-label">NOW PLAYING</span>
-    <span class="now-title" id="nowTitle">No song selected</span>
-    <span class="now-sub" id="nowSub">—</span>
+  <div class="player-top">
+    <div class="now-info">
+      <span class="now-label">NOW PLAYING</span>
+      <span class="now-title" id="nowTitle">No song selected</span>
+      <span class="now-sub" id="nowSub">Tap a song from the list to start</span>
+    </div>
+
+    <div class="controls">
+      <button class="small-btn" id="prevBtn">⏮</button>
+      <button class="play-btn" id="playBtn">▶</button>
+      <button class="pause-btn" id="pauseBtn">❚❚</button>
+      <button class="small-btn" id="nextBtn">⏭</button>
+    </div>
   </div>
 
-  <div class="controls">
-    <button class="play-btn" id="playBtn">▶</button>
-    <button class="pause-btn" id="pauseBtn">❚❚</button>
+  <div class="seek-row">
+    <span id="currentTime">0:00</span>
+    <input type="range" id="seekBar" min="0" max="100" value="0" />
+    <span id="duration">0:00</span>
   </div>
 </div>
 
-<!-- AUDIO ELEMENT -->
+<!-- HIDDEN AUDIO -->
 <audio id="audioPlayer"></audio>
 
 <script>
+  // --- SONG DATA (7 tracks) ---
+  const tracks = [
+    {
+      title: "Khaleja \u2013 Sada Siva (Epic BGM)",
+      subtitle: "Listen it by GVS",
+      file: "khaleja_sada_siva_epic_bgm.mp3"
+    },
+    {
+      title: "Satranga",
+      subtitle: "From ANIMAL \u00b7 Listen it by GVS",
+      file: "ANIMAL_ SATRANGA(Song) Ranbir Kapoor,RashmikaSandeep VArijit,Shreyas P,Siddharth-Garima Bhushan K.mp3"
+    },
+    {
+      title: "Aavan Jaavan",
+      subtitle: "From WAR 2 \u00b7 Listen it by GVS",
+      file: "Aavan Jaavan Song _ WAR 2 _ Hrithik Roshan, Kiara Advani _ Pritam, Arijit Singh, Nikhita _ Amitabh B [enjkcCdAlXc].mp3"
+    },
+    {
+      title: "Humsafar",
+      subtitle: "Listen it by GVS",
+      file: "Humsafar Song _ Saiyaara _ Ahaan Panday _ Aneet Padda_ Sachet Tandon, Parampara Tandon, Irshad Kamil [D9DiMnlpFK8].mp3"
+    },
+    {
+      title: "Powerhouse",
+      subtitle: "Coolie Superstar \u00b7 Listen it by GVS",
+      file: "Powerhouse - Video Song Coolie Superstar Rajinikanth Sun Pictures Lokesh Anirudh.mp3"
+    },
+    {
+      title: "Sarkaaru Raa",
+      subtitle: "Daaku Maharaaj \u00b7 Listen it by GVS",
+      file: "Sarkaru Raa Lyric Video _ Daaku Maharaaj _ Nandamuri Balakrishna _ Bobby Kolli _ Thaman S [YB4U_RpbuQQ].mp3"
+    },
+    {
+      title: "Sooreede",
+      subtitle: "Salaar \u00b7 Listen it by GVS",
+      file: "Sooreede - Video Song _ Salaar _ Prabhas _ Prithviraj _ Prashanth Neel _ Ravi Basrur _ Hombale Films [2n7lsBRfmA0].mp3"
+    }
+  ];
+
+  // Queue is an array of indexes into tracks[]
+  let queue = tracks.map((_, i) => i);
+  let currentQueueIndex = 0;      // position inside the queue
   const audio = document.getElementById("audioPlayer");
-  const playBtn = document.getElementById("playBtn");
-  const pauseBtn = document.getElementById("pauseBtn");
+
+  // DOM elements
+  const libraryList = document.getElementById("libraryList");
+  const queueList = document.getElementById("queueList");
+  const resetQueueBtn = document.getElementById("resetQueueBtn");
 
   const nowTitle = document.getElementById("nowTitle");
   const nowSub = document.getElementById("nowSub");
+  const playBtn = document.getElementById("playBtn");
+  const pauseBtn = document.getElementById("pauseBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const prevBtn = document.getElementById("prevBtn");
+  const seekBar = document.getElementById("seekBar");
+  const currentTimeEl = document.getElementById("currentTime");
+  const durationEl = document.getElementById("duration");
 
-  function playSong(title, subtitle, file) {
-    nowTitle.textContent = title;
-    nowSub.textContent = subtitle;
+  // --- Rendering functions ---
+  function renderLibrary() {
+    libraryList.innerHTML = "";
+    tracks.forEach((track, index) => {
+      const div = document.createElement("div");
+      div.className = "track";
+      div.onclick = () => playFromLibrary(index);
 
-    audio.src = file;
-    audio.play();
-
-    playBtn.style.display = "none";
-    pauseBtn.style.display = "flex";
+      div.innerHTML = `
+        <div class="track-left">
+          <span class="track-title">${track.title}</span>
+          <span class="track-sub">${track.subtitle}</span>
+        </div>
+        <div class="track-index">${index + 1}</div>
+      `;
+      libraryList.appendChild(div);
+    });
   }
 
+  function renderQueue() {
+    queueList.innerHTML = "";
+    queue.forEach((trackIndex, position) => {
+      const track = tracks[trackIndex];
+      const li = document.createElement("li");
+      li.className = "queue-item";
+
+      const label = document.createElement("span");
+      label.textContent = `${position + 1}. ${track.title}`;
+
+      const btnWrap = document.createElement("div");
+      btnWrap.className = "queue-buttons";
+
+      const upBtn = document.createElement("button");
+      upBtn.textContent = "↑";
+      upBtn.onclick = () => {
+        if (position <= 0) return;
+        [queue[position - 1], queue[position]] = [queue[position], queue[position - 1]];
+        renderQueue();
+      };
+
+      const downBtn = document.createElement("button");
+      downBtn.textContent = "↓";
+      downBtn.onclick = () => {
+        if (position >= queue.length - 1) return;
+        [queue[position + 1], queue[position]] = [queue[position], queue[position + 1]];
+        renderQueue();
+      };
+
+      btnWrap.appendChild(upBtn);
+      btnWrap.appendChild(downBtn);
+
+      li.appendChild(label);
+      li.appendChild(btnWrap);
+
+      queueList.appendChild(li);
+    });
+  }
+
+  // --- Player logic ---
+  function updatePlayPauseUI(isPlaying) {
+    if (isPlaying) {
+      playBtn.style.display = "none";
+      pauseBtn.style.display = "inline-flex";
+    } else {
+      playBtn.style.display = "inline-flex";
+      pauseBtn.style.display = "none";
+    }
+  }
+
+  function loadCurrentTrack(autoplay = true) {
+    if (queue.length === 0) return;
+
+    const trackIndex = queue[currentQueueIndex];
+    const track = tracks[trackIndex];
+
+    nowTitle.textContent = track.title;
+    nowSub.textContent = track.subtitle;
+
+    audio.src = track.file;
+    if (autoplay) {
+      audio.play();
+      updatePlayPauseUI(true);
+    } else {
+      updatePlayPauseUI(false);
+    }
+  }
+
+  function playFromLibrary(libraryIndex) {
+    const positionInQueue = queue.indexOf(libraryIndex);
+    if (positionInQueue !== -1) {
+      currentQueueIndex = positionInQueue;
+    } else {
+      queue.push(libraryIndex);
+      currentQueueIndex = queue.length - 1;
+      renderQueue();
+    }
+    loadCurrentTrack(true);
+  }
+
+  function playNext() {
+    if (queue.length === 0) return;
+    currentQueueIndex = (currentQueueIndex + 1) % queue.length;
+    loadCurrentTrack(true);
+  }
+
+  function playPrev() {
+    if (queue.length === 0) return;
+    currentQueueIndex = (currentQueueIndex - 1 + queue.length) % queue.length;
+    loadCurrentTrack(true);
+  }
+
+  // --- Event wiring ---
   playBtn.onclick = () => {
-    audio.play();
-    playBtn.style.display = "none";
-    pauseBtn.style.display = "flex";
+    if (!audio.src) {
+      // no track selected yet: start from first in queue
+      currentQueueIndex = 0;
+      loadCurrentTrack(true);
+    } else {
+      audio.play();
+      updatePlayPauseUI(true);
+    }
   };
 
   pauseBtn.onclick = () => {
     audio.pause();
-    playBtn.style.display = "flex";
-    pauseBtn.style.display = "none";
+    updatePlayPauseUI(false);
   };
+
+  nextBtn.onclick = playNext;
+  prevBtn.onclick = playPrev;
+
+  resetQueueBtn.onclick = () => {
+    queue = tracks.map((_, i) => i);
+    currentQueueIndex = 0;
+    renderQueue();
+  };
+
+  // Audio time & seek-bar
+  function formatTime(sec) {
+    if (isNaN(sec)) return "0:00";
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  }
+
+  audio.addEventListener("loadedmetadata", () => {
+    durationEl.textContent = formatTime(audio.duration);
+  });
+
+  audio.addEventListener("timeupdate", () => {
+    if (!audio.duration) return;
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+    const percent = (audio.currentTime / audio.duration) * 100;
+    seekBar.value = percent;
+    durationEl.textContent = formatTime(audio.duration);
+  });
+
+  seekBar.addEventListener("input", () => {
+    if (!audio.duration) return;
+    const newTime = (seekBar.value / 100) * audio.duration;
+    audio.currentTime = newTime;
+  });
+
+  audio.addEventListener("ended", () => {
+    playNext();
+  });
+
+  // Initial render
+  renderLibrary();
+  renderQueue();
+  updatePlayPauseUI(false);
 </script>
 
 </body>
