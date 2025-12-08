@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>WATCH IT BY GVS MUSIC</title>
+  <title>Listen With By GVS – Music App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
@@ -80,6 +80,12 @@
       }
     }
 
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     .brand-mark {
       width: 40px;
       height: 40px;
@@ -102,7 +108,7 @@
     }
 
     .brand-text {
-      margin-top: 10px;
+      margin-top: 6px;
     }
 
     @media (max-width: 768px) {
@@ -120,7 +126,6 @@
     .brand-sub {
       font-size: 11px;
       color: #9ca3af;
-      margin-top: 2px;
     }
 
     .nav {
@@ -490,7 +495,7 @@
       position: fixed;
       left: 50%;
       transform: translateX(-50%);
-      bottom: 14px;
+      bottom: 60px;
       width: min(680px, 92%);
       border-radius: 999px;
       padding: 8px 14px;
@@ -501,6 +506,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+      z-index: 5;
     }
 
     .now-info {
@@ -542,7 +548,6 @@
       align-items: center;
       justify-content: center;
       font-size: 12px;
-      cursor: default;
       color: #cbd5f5;
       background: #020617;
     }
@@ -574,10 +579,35 @@
       50%      { height: 12px; opacity: 1;   }
     }
 
+    /* small player area */
+    .player-area {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 10px;
+      width: min(680px, 92%);
+      z-index: 4;
+    }
+
+    .player-frame-wrapper {
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      background: #020617;
+      display: none; /* shown only when a song is playing */
+    }
+
+    .player-frame-wrapper iframe {
+      width: 100%;
+      height: 0; /* audio feel: tiny height */
+      border: none;
+    }
+
     @media (max-width: 540px) {
       .now-playing {
         flex-direction: column;
         align-items: flex-start;
+        bottom: 80px;
       }
       .now-info {
         max-width: 100%;
@@ -599,11 +629,11 @@
   <div class="app">
     <!-- Sidebar -->
     <aside class="sidebar">
-      <div class="brand-header" style="display:flex; align-items:center; gap:10px;">
+      <div class="brand-header">
         <div class="brand-mark">G</div>
         <div class="brand-text">
-          <div class="brand-name">WATCH IT BY GVS</div>
-          <div class="brand-sub">Unique Music Sessions</div>
+          <div class="brand-name">Listen With By GVS</div>
+          <div class="brand-sub">Unique Music Experience</div>
         </div>
       </div>
 
@@ -623,26 +653,26 @@
       <header class="hero-header">
         <div class="hero-text-block">
           <div class="hero-title">
-            <span class="hero-highlight">GVS</span> MUSIC APP
+            <span class="hero-highlight">GVS</span> Listen With · Music App
           </div>
           <p class="hero-sub">
             A custom-built music space. Clean like Apple Music, glowing like neon –
-            every album and song hand-picked by you.
+            every song and album added by you.
           </p>
 
           <div class="hero-chip-row">
             <span class="chip primary-chip">Unique UI · Not copied</span>
             <span class="chip">Animated background</span>
-            <span class="chip">Movie songs · YouTube audio style</span>
+            <span class="chip">Movie BGM · YouTube audio style</span>
           </div>
         </div>
 
         <div class="hero-right">
           <button class="hero-pill">
             <span class="hero-pill-dot"></span>
-            Now Playing · Salaar Mode
+            Live Session · GVS
           </button>
-          <span style="margin-top:4px;">Built for: <strong>WATCH IT BY GVS</strong></span>
+          <span style="margin-top:4px;">Brand: <strong>Listen With By GVS</strong></span>
         </div>
       </header>
 
@@ -651,28 +681,28 @@
         <div class="section-header">
           <div>
             <div class="section-title">Featured Albums</div>
-            <div class="section-sub">Tap an album to focus its songs below.</div>
+            <div class="section-sub">Tap an album (visual only for now).</div>
           </div>
         </div>
 
         <div class="album-grid">
-          <!-- Album 1: Salaar -->
-          <article class="album-card" data-album="salaar">
-            <span class="album-tag">Now · Highlighted</span>
+          <!-- Album 1: Salaar / BGM vibes -->
+          <article class="album-card">
+            <span class="album-tag">Now</span>
             <img
               class="album-cover"
               src="https://assets.gadgets360cdn.com/pricee/assets/product/202312/Salaar_1703756034.jpg"
               alt="Salaar Album"
             />
             <div class="album-info">
-              <div class="album-name">Salaar – Official Album</div>
-              <div class="album-meta">Telugu · Mass · Prabhas</div>
+              <div class="album-name">Mass BGM Collection</div>
+              <div class="album-meta">Khaleja · Salaar · More</div>
             </div>
           </article>
 
-          <!-- Album 2: Future album -->
-          <article class="album-card" data-album="album2">
-            <span class="album-tag">Coming next</span>
+          <!-- Album 2 -->
+          <article class="album-card">
+            <span class="album-tag">Next</span>
             <img
               class="album-cover"
               src="https://images.pexels.com/photos/164745/pexels-photo-164745.jpeg?auto=compress&cs=tinysrgb&w=800"
@@ -684,9 +714,9 @@
             </div>
           </article>
 
-          <!-- Album 3: Future album -->
-          <article class="album-card" data-album="album3">
-            <span class="album-tag">Custom Mix</span>
+          <!-- Album 3 -->
+          <article class="album-card">
+            <span class="album-tag">Custom</span>
             <img
               class="album-cover"
               src="https://images.pexels.com/photos/1647458/pexels-photo-1647458.jpeg?auto=compress&cs=tinysrgb&w=800"
@@ -700,41 +730,56 @@
         </div>
       </section>
 
-      <!-- Tracks panel (currently for Salaar) -->
+      <!-- Tracks panel -->
       <section style="margin-top: 8px;">
         <div class="section-header">
           <div>
-            <div class="section-title">Salaar – Tracklist</div>
-            <div class="section-sub">Click Play to set “Now Playing”. Later we’ll attach YouTube links.</div>
+            <div class="section-title">Tracklist</div>
+            <div class="section-sub">Click Play to start “Khaleja Epic BGM”.</div>
           </div>
         </div>
 
         <div class="tracks-panel">
           <ul class="track-list">
+            <!-- Track 1: Khaleja Epic BGM -->
             <li class="track-item">
               <div class="track-main">
                 <div class="track-index">1</div>
                 <div class="track-text">
-                  <span class="track-title">Sooraj Hi Chhaon Banke</span>
-                  <span class="track-sub">Salaar · Main Song</span>
+                  <span class="track-title">Khaleja Epic BGM</span>
+                  <span class="track-sub">Listen it by GVS · From YouTube</span>
                 </div>
               </div>
               <div class="track-actions">
-                <button class="btn-pill play-btn" data-song="Sooraj Hi Chhaon Banke" data-album="Salaar">Play</button>
+                <button
+                  class="btn-pill play-btn"
+                  data-song="Khaleja Epic BGM"
+                  data-album="Listen With By GVS"
+                  data-link="https://www.youtube.com/embed/m4qKrVQ6TRw"
+                >
+                  Play
+                </button>
                 <button class="btn-pill secondary">More</button>
               </div>
             </li>
 
+            <!-- Extra placeholder tracks (no links yet) -->
             <li class="track-item">
               <div class="track-main">
                 <div class="track-index">2</div>
                 <div class="track-text">
-                  <span class="track-title">Salaar Anthem / Mass Track</span>
-                  <span class="track-sub">High energy theme</span>
+                  <span class="track-title">Future BGM Slot</span>
+                  <span class="track-sub">Add next YouTube BGM here</span>
                 </div>
               </div>
               <div class="track-actions">
-                <button class="btn-pill play-btn" data-song="Salaar Anthem / Mass Track" data-album="Salaar">Play</button>
+                <button
+                  class="btn-pill play-btn"
+                  data-song="Future BGM Slot"
+                  data-album="Listen With By GVS"
+                >
+                  Play
+                </button>
                 <button class="btn-pill secondary">More</button>
               </div>
             </li>
@@ -743,26 +788,18 @@
               <div class="track-main">
                 <div class="track-index">3</div>
                 <div class="track-text">
-                  <span class="track-title">Emotional / Melodic Track</span>
-                  <span class="track-sub">Soft mood side of Salaar</span>
+                  <span class="track-title">Another Epic Theme</span>
+                  <span class="track-sub">You can map another link later</span>
                 </div>
               </div>
               <div class="track-actions">
-                <button class="btn-pill play-btn" data-song="Emotional / Melodic Track" data-album="Salaar">Play</button>
-                <button class="btn-pill secondary">More</button>
-              </div>
-            </li>
-
-            <li class="track-item">
-              <div class="track-main">
-                <div class="track-index">4</div>
-                <div class="track-text">
-                  <span class="track-title">Sound of Violence / Action Theme</span>
-                  <span class="track-sub">Hard-core action vibe</span>
-                </div>
-              </div>
-              <div class="track-actions">
-                <button class="btn-pill play-btn" data-song="Sound of Violence / Action Theme" data-album="Salaar">Play</button>
+                <button
+                  class="btn-pill play-btn"
+                  data-song="Another Epic Theme"
+                  data-album="Listen With By GVS"
+                >
+                  Play
+                </button>
                 <button class="btn-pill secondary">More</button>
               </div>
             </li>
@@ -771,7 +808,7 @@
       </section>
 
       <footer>
-        WATCH IT BY GVS MUSIC · UI mixed from Apple-clean & Neon-custom · Hosted on GitHub Pages.
+        Listen With By GVS · Custom Music App UI · Hosted on GitHub Pages.
       </footer>
     </main>
   </div>
@@ -796,22 +833,48 @@
     </div>
   </div>
 
-  <!-- Simple JS: update "Now Playing" text when clicking Play buttons -->
+  <!-- Audio-style hidden YouTube player -->
+  <div class="player-area">
+    <div class="player-frame-wrapper" id="playerWrapper">
+      <iframe
+        id="playerFrame"
+        src=""
+        title="GVS Music Player"
+        allow="autoplay; encrypted-media"
+      ></iframe>
+    </div>
+  </div>
+
+  <!-- Simple JS: update "Now Playing" text + play YouTube audio -->
   <script>
     const playButtons = document.querySelectorAll(".play-btn");
     const nowTitle = document.getElementById("nowTitle");
     const nowSub = document.getElementById("nowSub");
+    const playerWrapper = document.getElementById("playerWrapper");
+    const playerFrame = document.getElementById("playerFrame");
 
-    playButtons.forEach(btn => {
+    playButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
         const song = btn.getAttribute("data-song") || "Unknown";
         const album = btn.getAttribute("data-album") || "GVS Mix";
+        const link = btn.getAttribute("data-link");
 
         nowTitle.textContent = song;
-        nowSub.textContent = album + " · Playing from WATCH IT BY GVS";
+        nowSub.textContent = album + " · Playing via YouTube audio";
 
-        // small visual feedback on click
-        btn.style.transform = "translateY(1px) scale(0.98)";
+        // If we have a YouTube link, load it in the mini player
+        if (link) {
+          playerFrame.src = link + "?autoplay=1";
+          playerWrapper.style.display = "block";
+          playerFrame.style.height = "40px"; // tiny height so it feels like audio only
+        } else {
+          // No link yet – stop player
+          playerFrame.src = "";
+          playerWrapper.style.display = "none";
+        }
+
+        // Small click animation
+        btn.style.transform = "translateY(1px) scale(0.97)";
         setTimeout(() => {
           btn.style.transform = "";
         }, 130);
