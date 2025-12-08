@@ -1,417 +1,822 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Watch IT BY GVS – Salaar Album</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <title>WATCH IT BY GVS MUSIC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        body {
-            background: #050711;
-            color: #ffffff;
-            font-family: Arial, Helvetica, sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #f9fafb;
+      background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
+      overflow-x: hidden;
+    }
 
-        /* ---------- Animated particle-style background ---------- */
-        .bg-animation {
-            position: fixed;
-            inset: 0;
-            overflow: hidden;
-            z-index: -2;
-            background: radial-gradient(circle at 10% 20%, #1f2933 0, transparent 40%),
-                        radial-gradient(circle at 80% 0%, #0f766e 0, transparent 45%),
-                        radial-gradient(circle at 0% 100%, #7c2d12 0, transparent 40%);
-        }
+    /* ===== Animated gradient background ===== */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(circle at 0% 0%, #0f766e30 0, transparent 55%),
+        radial-gradient(circle at 100% 0%, #7c3aed30 0, transparent 55%),
+        radial-gradient(circle at 50% 100%, #f9731630 0, transparent 55%);
+      animation: hueShift 18s ease-in-out infinite alternate;
+    }
 
-        .particle {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 0 12px rgba(0, 255, 255, 0.7);
-            animation: floatUp linear infinite;
-        }
+    .bg-glass {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      backdrop-filter: blur(28px);
+      background: radial-gradient(circle at top, #020617aa, #020617f0 50%, #020617ff 100%);
+    }
 
-        /* Create different speeds using nth-child */
-        .particle:nth-child(1) { left: 10%; animation-duration: 16s; }
-        .particle:nth-child(2) { left: 30%; animation-duration: 22s; }
-        .particle:nth-child(3) { left: 50%; animation-duration: 18s; }
-        .particle:nth-child(4) { left: 70%; animation-duration: 26s; }
-        .particle:nth-child(5) { left: 85%; animation-duration: 20s; }
-        .particle:nth-child(6) { left: 20%; animation-duration: 24s; }
-        .particle:nth-child(7) { left: 60%; animation-duration: 28s; }
-        .particle:nth-child(8) { left: 40%; animation-duration: 21s; }
-        .particle:nth-child(9) { left: 75%; animation-duration: 19s; }
-        .particle:nth-child(10){ left: 5%;  animation-duration: 23s; }
+    @keyframes hueShift {
+      from { filter: hue-rotate(0deg); }
+      to   { filter: hue-rotate(120deg); }
+    }
 
-        @keyframes floatUp {
-            0%   { transform: translateY(110vh) scale(0.7); opacity: 0; }
-            10%  { opacity: 1; }
-            90%  { opacity: 1; }
-            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
-        }
+    /* ===== Layout ===== */
+    .app {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 22px 14px 80px 14px;
+      display: flex;
+      gap: 18px;
+    }
 
-        /* overlay for soft dark layer */
-        .bg-overlay {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at top, rgba(0,0,0,0.3), rgba(0,0,0,0.9));
-            z-index: -1;
-        }
+    @media (max-width: 768px) {
+      .app {
+        flex-direction: column;
+        padding-inline: 10px;
+      }
+    }
 
-        /* ---------- Layout ---------- */
+    /* ===== Sidebar ===== */
+    .sidebar {
+      width: 240px;
+      border-radius: 24px;
+      padding: 18px 16px;
+      background: linear-gradient(145deg, #020617ee, #020617f8);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      box-shadow: 0 0 28px rgba(15, 23, 42, 0.9);
+    }
 
-        .wrapper {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 24px 16px 60px 16px;
-        }
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+    }
 
-        /* Animated site title */
-        .logo-title {
-            font-size: clamp(32px, 5vw, 46px);
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-align: center;
-            margin-bottom: 8px;
-            color: #00eaff;
-            text-shadow: 0 0 16px #00eaff;
-            animation: glow 2s ease-in-out infinite alternate,
-                       slideUp 1.4s ease forwards;
-            opacity: 0;
-        }
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0%, #22d3ee, #0f172a);
+      box-shadow: 0 0 18px #22d3ee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      color: #ecfeff;
+      animation: logoPulse 2.8s ease-in-out infinite;
+    }
 
-        .subtitle {
-            text-align: center;
-            color: #cbd5f5;
-            font-size: 14px;
-            margin-bottom: 18px;
-            opacity: 0.85;
-        }
+    @keyframes logoPulse {
+      0%   { transform: scale(1);   box-shadow: 0 0 16px #22d3eeaa; }
+      50%  { transform: scale(1.06); box-shadow: 0 0 30px #22d3eeff; }
+      100% { transform: scale(1);   box-shadow: 0 0 16px #22d3eeaa; }
+    }
 
-        @keyframes glow {
-            from {
-                text-shadow: 0 0 10px #00eaff;
-                transform: scale(1);
-            }
-            to {
-                text-shadow: 0 0 26px #00fff7;
-                transform: scale(1.04);
-            }
-        }
+    .brand-text {
+      margin-top: 10px;
+    }
 
-        @keyframes slideUp {
-            from {
-                transform: translateY(26px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
+    @media (max-width: 768px) {
+      .brand-text {
+        margin-top: 0;
+      }
+    }
 
-        /* Album banner */
+    .brand-name {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
 
-        .album-banner-wrap {
-            display: flex;
-            justify-content: center;
-            margin: 10px 0 26px 0;
-        }
+    .brand-sub {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
 
-        .album-banner {
-            width: 100%;
-            max-width: 520px;
-            border-radius: 18px;
-            border: 1px solid rgba(148, 163, 184, 0.5);
-            box-shadow: 0 0 30px rgba(0,0,0,0.85);
-            animation: fadeIn 1.3s ease forwards;
-            opacity: 0;
-        }
+    .nav {
+      margin-top: 18px;
+      border-top: 1px solid rgba(55, 65, 81, 0.8);
+      padding-top: 12px;
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.96); }
-            to   { opacity: 1; transform: scale(1);   }
-        }
+    .nav-group-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
 
-        .section-title {
-            margin-top: 10px;
-            margin-bottom: 10px;
-            font-size: 20px;
-            font-weight: 600;
-            color: #e5e7eb;
-            text-align: left;
-        }
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
 
-        /* Song cards */
+    @media (max-width: 768px) {
+      .nav {
+        margin-top: 0;
+        border-top: none;
+        padding-top: 0;
+        margin-left: auto;
+      }
+      .nav-list {
+        flex-direction: row;
+      }
+    }
 
-        .songs-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
+    .nav-item {
+      font-size: 13px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid transparent;
+      transition: 0.18s ease;
+      color: #e5e7eb;
+    }
 
-        .song-card {
-            background: radial-gradient(circle at top left, #1e293b 0, #020617 60%);
-            border-radius: 16px;
-            border: 1px solid rgba(56, 189, 248, 0.5);
-            padding: 16px 14px 18px 14px;
-            box-shadow: 0 0 22px rgba(8, 47, 73, 0.9);
-            position: relative;
-            overflow: hidden;
-            transform: translateY(10px);
-            opacity: 0;
-            animation: cardIn 0.8s ease forwards;
-        }
+    .nav-item span.icon-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #6b7280;
+    }
 
-        .song-card:nth-child(1) { animation-delay: 0.1s; }
-        .song-card:nth-child(2) { animation-delay: 0.25s; }
-        .song-card:nth-child(3) { animation-delay: 0.4s; }
-        .song-card:nth-child(4) { animation-delay: 0.55s; }
+    .nav-item.active,
+    .nav-item:hover {
+      border-color: rgba(56, 189, 248, 0.9);
+      background: radial-gradient(circle at 0 0, #0f172a, #020617);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
+      color: #e0f2fe;
+    }
 
-        @keyframes cardIn {
-            from { opacity: 0; transform: translateY(26px); }
-            to   { opacity: 1; transform: translateY(0);    }
-        }
+    /* ===== Main content ===== */
+    .main {
+      flex: 1;
+      border-radius: 26px;
+      padding: 20px 18px 18px 18px;
+      background: linear-gradient(145deg, #020617f0, #020617ee);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      box-shadow: 0 0 32px rgba(15, 23, 42, 0.9);
+      animation: contentFade 0.7s ease-out;
+    }
 
-        .song-card::before {
-            content: "";
-            position: absolute;
-            inset: -40%;
-            background:
-                radial-gradient(circle at 0% 0%, rgba(34,211,238,0.23), transparent 55%),
-                radial-gradient(circle at 100% 100%, rgba(248,113,113,0.15), transparent 55%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
+    @keyframes contentFade {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-        .song-card:hover::before {
-            opacity: 1;
-        }
+    .hero-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
 
-        .song-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
+    .hero-text-block {
+      max-width: 65%;
+    }
 
-        .song-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #e0f2fe;
-        }
+    @media (max-width: 768px) {
+      .hero-text-block {
+        max-width: 100%;
+      }
+    }
 
-        .song-tag {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 2px 8px;
-            border-radius: 999px;
-            border: 1px solid rgba(96,165,250,0.7);
-            background: rgba(15,23,42,0.9);
-            color: #bfdbfe;
-        }
+    .hero-title {
+      font-size: clamp(26px, 4vw, 32px);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: #e0f2fe;
+      text-transform: uppercase;
+    }
 
-        .song-meta {
-            font-size: 12px;
-            color: #9ca3af;
-            margin-bottom: 10px;
-            text-align: left;
-            position: relative;
-            z-index: 1;
-        }
+    .hero-highlight {
+      display: inline-block;
+      background: linear-gradient(120deg, #22c55e, #22d3ee, #a855f7);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
 
-        .player-wrap {
-            position: relative;
-            z-index: 1;
-            border-radius: 14px;
-            overflow: hidden;
-            border: 1px solid rgba(148, 163, 184, 0.6);
-        }
+    .hero-sub {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #9ca3af;
+      max-width: 420px;
+    }
 
-        iframe {
-            width: 100%;
-            height: 260px;
-            border: none;
-            display: block;
-        }
+    .hero-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
 
-        .song-actions {
-            margin-top: 10px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-            position: relative;
-            z-index: 1;
-        }
+    .chip {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: #d1d5db;
+      background: #020617;
+    }
 
-        .btn {
-            border: 1px solid rgba(59, 130, 246, 0.8);
-            background: linear-gradient(135deg, #0f172a, #1d283a);
-            padding: 6px 14px;
-            border-radius: 999px;
-            font-size: 11px;
-            letter-spacing: 0.7px;
-            text-transform: uppercase;
-            color: #e0f2fe;
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-        }
+    .primary-chip {
+      border-color: rgba(56, 189, 248, 0.9);
+      color: #e0f2fe;
+    }
 
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
-            background: linear-gradient(135deg, #1d283a, #0f172a);
-        }
+    .hero-pill {
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.9);
+      background: radial-gradient(circle at 0 0, #0f172a, #020617);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #e0f2fe;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.7);
+    }
 
-        .btn-outline {
-            border-color: rgba(148,163,184,0.8);
-            color: #cbd5f5;
-        }
+    .hero-pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px #22c55e;
+    }
 
-        footer {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 11px;
-            color: #6b7280;
-        }
+    .hero-right {
+      text-align: right;
+      font-size: 11px;
+      color: #6b7280;
+    }
 
-        @media (max-width: 640px) {
-            .wrapper {
-                padding-inline: 10px;
-            }
-            iframe {
-                height: 210px;
-            }
-        }
-    </style>
+    .hero-right span {
+      display: block;
+    }
+
+    /* ===== Section titles ===== */
+    .section-header {
+      margin: 4px 0 10px 0;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .section-sub {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    /* ===== Album grid ===== */
+    .album-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .album-card {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: radial-gradient(circle at top, #020617, #020617);
+      cursor: pointer;
+      transform: translateY(4px);
+      opacity: 0;
+      animation: cardPop 0.6s ease forwards;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .album-card:nth-child(1) { animation-delay: 0.1s; }
+    .album-card:nth-child(2) { animation-delay: 0.2s; }
+    .album-card:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes cardPop {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .album-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(56, 189, 248, 0.9);
+      box-shadow: 0 0 22px rgba(56, 189, 248, 0.6);
+    }
+
+    .album-cover {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .album-info {
+      padding: 8px 10px 10px 10px;
+    }
+
+    .album-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .album-meta {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    .album-tag {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      color: #e5e7eb;
+    }
+
+    /* ===== Tracks list ===== */
+    .tracks-panel {
+      margin-top: 6px;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: radial-gradient(circle at top left, #020617, #020617f0);
+    }
+
+    .track-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .track-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid transparent;
+      transition: 0.16s ease;
+    }
+
+    .track-item:hover {
+      border-color: rgba(56, 189, 248, 0.8);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+    }
+
+    .track-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .track-index {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #020617;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: #9ca3af;
+    }
+
+    .track-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .track-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .track-sub {
+      font-size: 10px;
+      color: #6b7280;
+    }
+
+    .track-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-pill {
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.9);
+      padding: 5px 10px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      background: radial-gradient(circle at 0 0, #0f172a, #020617);
+      color: #e0f2fe;
+      cursor: pointer;
+      transition: 0.16s ease;
+    }
+
+    .btn-pill.secondary {
+      border-color: rgba(148, 163, 184, 0.9);
+      color: #cbd5f5;
+    }
+
+    .btn-pill:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
+    }
+
+    /* ===== Now playing bar ===== */
+    .now-playing {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 14px;
+      width: min(680px, 92%);
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(56, 189, 248, 0.85);
+      box-shadow: 0 0 26px rgba(15, 23, 42, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .now-info {
+      display: flex;
+      flex-direction: column;
+      max-width: 60%;
+    }
+
+    .now-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #38bdf8;
+    }
+
+    .now-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .now-sub {
+      font-size: 10px;
+      color: #6b7280;
+    }
+
+    .now-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .control-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: default;
+      color: #cbd5f5;
+      background: #020617;
+    }
+
+    .control-btn.primary {
+      border-color: rgba(56, 189, 248, 0.9);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.7);
+    }
+
+    .now-mini-wave {
+      display: inline-flex;
+      gap: 2px;
+      margin-left: 4px;
+    }
+
+    .bar {
+      width: 2px;
+      border-radius: 999px;
+      background: #22c55e;
+      animation: wave 1s ease-in-out infinite;
+    }
+
+    .bar:nth-child(2) { animation-delay: 0.15s; }
+    .bar:nth-child(3) { animation-delay: 0.3s; }
+    .bar:nth-child(4) { animation-delay: 0.45s; }
+
+    @keyframes wave {
+      0%, 100% { height: 6px; opacity: 0.6; }
+      50%      { height: 12px; opacity: 1;   }
+    }
+
+    @media (max-width: 540px) {
+      .now-playing {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .now-info {
+        max-width: 100%;
+      }
+    }
+
+    footer {
+      margin-top: 18px;
+      font-size: 10px;
+      text-align: right;
+      color: #6b7280;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="bg-layer"></div>
+  <div class="bg-glass"></div>
 
-    <!-- Animated background particles -->
-    <div class="bg-animation">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-    </div>
-    <div class="bg-overlay"></div>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand-header" style="display:flex; align-items:center; gap:10px;">
+        <div class="brand-mark">G</div>
+        <div class="brand-text">
+          <div class="brand-name">WATCH IT BY GVS</div>
+          <div class="brand-sub">Unique Music Sessions</div>
+        </div>
+      </div>
 
-    <main class="wrapper">
-        <h1 class="logo-title">WATCH IT BY GVS</h1>
-        <p class="subtitle">Salaar – Cinematic Music Session · Streaming via YouTube</p>
+      <nav class="nav">
+        <div class="nav-group-label">BROWSE</div>
+        <ul class="nav-list">
+          <li class="nav-item active"><span class="icon-dot"></span>Home</li>
+          <li class="nav-item"><span class="icon-dot"></span>Albums</li>
+          <li class="nav-item"><span class="icon-dot"></span>Favourites</li>
+        </ul>
+      </nav>
+    </aside>
 
-        <div class="album-banner-wrap">
-            <img
-                class="album-banner"
-                src="https://assets.gadgets360cdn.com/pricee/assets/product/202312/Salaar_1703756034.jpg"
-                alt="Salaar Poster"
-            />
+    <!-- Main -->
+    <main class="main">
+      <!-- Hero -->
+      <header class="hero-header">
+        <div class="hero-text-block">
+          <div class="hero-title">
+            <span class="hero-highlight">GVS</span> MUSIC APP
+          </div>
+          <p class="hero-sub">
+            A custom-built music space. Clean like Apple Music, glowing like neon –
+            every album and song hand-picked by you.
+          </p>
+
+          <div class="hero-chip-row">
+            <span class="chip primary-chip">Unique UI · Not copied</span>
+            <span class="chip">Animated background</span>
+            <span class="chip">Movie songs · YouTube audio style</span>
+          </div>
         </div>
 
-        <h2 class="section-title">Salaar Official Songs</h2>
+        <div class="hero-right">
+          <button class="hero-pill">
+            <span class="hero-pill-dot"></span>
+            Now Playing · Salaar Mode
+          </button>
+          <span style="margin-top:4px;">Built for: <strong>WATCH IT BY GVS</strong></span>
+        </div>
+      </header>
 
-        <section class="songs-grid">
-            <!-- Song 1 -->
-            <article class="song-card">
-                <div class="song-header">
-                    <h3 class="song-title">Sooraj Hi Chhaon Banke</h3>
-                    <span class="song-tag">Track 01</span>
-                </div>
-                <p class="song-meta">From the movie <strong>Salaar</strong> · YouTube embedded stream</p>
-                <div class="player-wrap">
-                    <iframe
-                        src="https://www.youtube.com/embed/2n7lsBRfmA0"
-                        title="Salaar Song 1"
-                        allowfullscreen
-                    ></iframe>
-                </div>
-                <div class="song-actions">
-                    <a class="btn btn-outline" href="https://youtu.be/2n7lsBRfmA0" target="_blank">Open on YouTube</a>
-                </div>
-            </article>
+      <!-- Albums section -->
+      <section style="margin-top: 4px;">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Featured Albums</div>
+            <div class="section-sub">Tap an album to focus its songs below.</div>
+          </div>
+        </div>
 
-            <!-- Song 2 -->
-            <article class="song-card">
-                <div class="song-header">
-                    <h3 class="song-title">Salaar Anthem / Mass Track</h3>
-                    <span class="song-tag">Track 02</span>
-                </div>
-                <p class="song-meta">High-energy theme for Salaar fans.</p>
-                <div class="player-wrap">
-                    <iframe
-                        src="https://www.youtube.com/embed/KGXSGtukDh0"
-                        title="Salaar Song 2"
-                        allowfullscreen
-                    ></iframe>
-                </div>
-                <div class="song-actions">
-                    <a class="btn btn-outline" href="https://youtu.be/KGXSGtukDh0" target="_blank">Open on YouTube</a>
-                </div>
-            </article>
+        <div class="album-grid">
+          <!-- Album 1: Salaar -->
+          <article class="album-card" data-album="salaar">
+            <span class="album-tag">Now · Highlighted</span>
+            <img
+              class="album-cover"
+              src="https://assets.gadgets360cdn.com/pricee/assets/product/202312/Salaar_1703756034.jpg"
+              alt="Salaar Album"
+            />
+            <div class="album-info">
+              <div class="album-name">Salaar – Official Album</div>
+              <div class="album-meta">Telugu · Mass · Prabhas</div>
+            </div>
+          </article>
 
-            <!-- Song 3 -->
-            <article class="song-card">
-                <div class="song-header">
-                    <h3 class="song-title">Emotional / Melodic Track</h3>
-                    <span class="song-tag">Track 03</span>
-                </div>
-                <p class="song-meta">Soft side of Salaar · Feel the mood.</p>
-                <div class="player-wrap">
-                    <iframe
-                        src="https://www.youtube.com/embed/bAg0BJXxX6U"
-                        title="Salaar Song 3"
-                        allowfullscreen
-                    ></iframe>
-                </div>
-                <div class="song-actions">
-                    <a class="btn btn-outline" href="https://youtu.be/bAg0BJXxX6U" target="_blank">Open on YouTube</a>
-                </div>
-            </article>
+          <!-- Album 2: Future album -->
+          <article class="album-card" data-album="album2">
+            <span class="album-tag">Coming next</span>
+            <img
+              class="album-cover"
+              src="https://images.pexels.com/photos/164745/pexels-photo-164745.jpeg?auto=compress&cs=tinysrgb&w=800"
+              alt="Future Album"
+            />
+            <div class="album-info">
+              <div class="album-name">Your Next Album</div>
+              <div class="album-meta">Add any movie / playlist here</div>
+            </div>
+          </article>
 
-            <!-- Song 4 -->
-            <article class="song-card">
-                <div class="song-header">
-                    <h3 class="song-title">Sound of Violence / Action Theme</h3>
-                    <span class="song-tag">Track 04</span>
-                </div>
-                <p class="song-meta">Hard-core action vibes · Perfect for mass scenes.</p>
-                <div class="player-wrap">
-                    <iframe
-                        src="https://www.youtube.com/embed/Z1QuBXVrUHU"
-                        title="Salaar Song 4"
-                        allowfullscreen
-                    ></iframe>
-                </div>
-                <div class="song-actions">
-                    <a class="btn btn-outline" href="https://youtu.be/Z1QuBXVrUHU" target="_blank">Open on YouTube</a>
-                </div>
-            </article>
-        </section>
+          <!-- Album 3: Future album -->
+          <article class="album-card" data-album="album3">
+            <span class="album-tag">Custom Mix</span>
+            <img
+              class="album-cover"
+              src="https://images.pexels.com/photos/1647458/pexels-photo-1647458.jpeg?auto=compress&cs=tinysrgb&w=800"
+              alt="Custom Mix"
+            />
+            <div class="album-info">
+              <div class="album-name">GVS Favourites</div>
+              <div class="album-meta">Create your own mix of hits</div>
+            </div>
+          </article>
+        </div>
+      </section>
 
-        <footer>
-            Watch IT BY GVS · Built with GitHub Pages · All videos stream from YouTube.
-        </footer>
+      <!-- Tracks panel (currently for Salaar) -->
+      <section style="margin-top: 8px;">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Salaar – Tracklist</div>
+            <div class="section-sub">Click Play to set “Now Playing”. Later we’ll attach YouTube links.</div>
+          </div>
+        </div>
+
+        <div class="tracks-panel">
+          <ul class="track-list">
+            <li class="track-item">
+              <div class="track-main">
+                <div class="track-index">1</div>
+                <div class="track-text">
+                  <span class="track-title">Sooraj Hi Chhaon Banke</span>
+                  <span class="track-sub">Salaar · Main Song</span>
+                </div>
+              </div>
+              <div class="track-actions">
+                <button class="btn-pill play-btn" data-song="Sooraj Hi Chhaon Banke" data-album="Salaar">Play</button>
+                <button class="btn-pill secondary">More</button>
+              </div>
+            </li>
+
+            <li class="track-item">
+              <div class="track-main">
+                <div class="track-index">2</div>
+                <div class="track-text">
+                  <span class="track-title">Salaar Anthem / Mass Track</span>
+                  <span class="track-sub">High energy theme</span>
+                </div>
+              </div>
+              <div class="track-actions">
+                <button class="btn-pill play-btn" data-song="Salaar Anthem / Mass Track" data-album="Salaar">Play</button>
+                <button class="btn-pill secondary">More</button>
+              </div>
+            </li>
+
+            <li class="track-item">
+              <div class="track-main">
+                <div class="track-index">3</div>
+                <div class="track-text">
+                  <span class="track-title">Emotional / Melodic Track</span>
+                  <span class="track-sub">Soft mood side of Salaar</span>
+                </div>
+              </div>
+              <div class="track-actions">
+                <button class="btn-pill play-btn" data-song="Emotional / Melodic Track" data-album="Salaar">Play</button>
+                <button class="btn-pill secondary">More</button>
+              </div>
+            </li>
+
+            <li class="track-item">
+              <div class="track-main">
+                <div class="track-index">4</div>
+                <div class="track-text">
+                  <span class="track-title">Sound of Violence / Action Theme</span>
+                  <span class="track-sub">Hard-core action vibe</span>
+                </div>
+              </div>
+              <div class="track-actions">
+                <button class="btn-pill play-btn" data-song="Sound of Violence / Action Theme" data-album="Salaar">Play</button>
+                <button class="btn-pill secondary">More</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <footer>
+        WATCH IT BY GVS MUSIC · UI mixed from Apple-clean & Neon-custom · Hosted on GitHub Pages.
+      </footer>
     </main>
+  </div>
+
+  <!-- Now Playing bar -->
+  <div class="now-playing">
+    <div class="now-info">
+      <span class="now-label">Now Playing</span>
+      <span class="now-title" id="nowTitle">Select a song to start</span>
+      <span class="now-sub" id="nowSub">Your track details will appear here.</span>
+    </div>
+    <div class="now-controls">
+      <div class="control-btn">⏮</div>
+      <div class="control-btn primary">▶</div>
+      <div class="control-btn">⏭</div>
+      <div class="now-mini-wave">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simple JS: update "Now Playing" text when clicking Play buttons -->
+  <script>
+    const playButtons = document.querySelectorAll(".play-btn");
+    const nowTitle = document.getElementById("nowTitle");
+    const nowSub = document.getElementById("nowSub");
+
+    playButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const song = btn.getAttribute("data-song") || "Unknown";
+        const album = btn.getAttribute("data-album") || "GVS Mix";
+
+        nowTitle.textContent = song;
+        nowSub.textContent = album + " · Playing from WATCH IT BY GVS";
+
+        // small visual feedback on click
+        btn.style.transform = "translateY(1px) scale(0.98)";
+        setTimeout(() => {
+          btn.style.transform = "";
+        }, 130);
+      });
+    });
+  </script>
 </body>
 </html>
