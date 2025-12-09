@@ -15,18 +15,18 @@
     background: #020617;
   }
 
-  /* Animated neon background (changes every ~2 seconds) */
+  /* Animated neon background */
   .bg {
     position: fixed;
     inset: 0;
-    z-index: -2;
+    z-index: -3;
     background: radial-gradient(circle at top, #0f172a, #020617 55%, #000 100%);
   }
 
   .bg-animate {
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: -2;
     background:
       radial-gradient(circle at 0% 0%, #22d3ee35, transparent 55%),
       radial-gradient(circle at 100% 0%, #a855f735, transparent 55%),
@@ -42,7 +42,6 @@
     100% { filter: hue-rotate(320deg);  opacity: 0.8; }
   }
 
-  /* Page layout */
   h1 {
     text-align: center;
     padding: 18px 0 4px;
@@ -92,12 +91,6 @@
     padding: 12px;
     box-shadow: 0 0 18px #020617;
     backdrop-filter: blur(16px);
-    animation: panelFade 0.6s ease-out;
-  }
-
-  @keyframes panelFade {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
   }
 
   .panel-title {
@@ -226,7 +219,7 @@
     box-shadow: 0 0 12px #22d3eeaa;
   }
 
-  /* Bottom player */
+  /* Bottom mini player */
   .player {
     position: fixed;
     bottom: 10px;
@@ -237,31 +230,83 @@
     border-radius: 20px;
     border: 1px solid #22d3eeaa;
     box-shadow: 0 0 20px #0ea5e966;
-    padding: 10px 14px 10px;
+    padding: 8px 12px 10px;
     backdrop-filter: blur(18px);
+    cursor: pointer; /* tap to open full player */
   }
 
   .player-top {
     display: flex;
     justify-content: space-between;
-    gap: 16px;
+    gap: 12px;
     align-items: center;
     flex-wrap: wrap;
   }
 
+  .mini-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .mini-cover {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background-size: cover;
+    background-position: center;
+    background-color: #020617;
+    border: 1px solid #334155;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mini-cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 12px #22d3ee55;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .mini-cover.spin::after {
+    opacity: 1;
+  }
+
+  .mini-cover.spin {
+    animation: spinSlow 12s linear infinite;
+  }
+
+  @keyframes spinSlow {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
   .now-info span { display: block; }
   .now-label {
-    font-size: 10px;
+    font-size: 9px;
     color: #38bdf8;
     letter-spacing: 2px;
   }
   .now-title {
     font-size: 14px;
     font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 170px;
   }
   .now-sub {
     font-size: 11px;
     color: #94a3b8;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 200px;
   }
 
   .controls {
@@ -293,14 +338,14 @@
     transform: translateY(-1px);
   }
 
-  /* Centred neon play/pause */
+  /* Neon play/pause in mini player */
   .play-btn,
   .pause-btn {
-    width: 46px;
-    height: 46px;
+    width: 40px;
+    height: 40px;
     border-radius: 999px;
     border: none;
-    font-size: 22px;
+    font-size: 20px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -325,7 +370,6 @@
     transform: translateY(-1px) scale(1.04);
   }
 
-  /* Seek bar row with white progress line */
   .seek-row {
     display: flex;
     align-items: center;
@@ -346,7 +390,7 @@
     overflow: hidden;
   }
 
-  /* Track background for progress (white line) */
+  /* we'll draw white/cyan progress line in JS via background */
   .seek-row input[type="range"]::-webkit-slider-runnable-track {
     height: 5px;
     background: transparent;
@@ -389,6 +433,296 @@
       justify-content: flex-start;
     }
   }
+
+  /* FULL PLAYER OVERLAY */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: none;
+  }
+
+  .overlay.visible {
+    display: block;
+  }
+
+  .overlay-backdrop {
+    position: absolute;
+    inset: 0;
+    background-position: center;
+    background-size: cover;
+    filter: blur(22px);
+    transform: scale(1.06);
+  }
+
+  .overlay-tint {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top, #020617cc, #020617f7);
+  }
+
+  .overlay-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 14px 18px;
+    color: #f9fafb;
+  }
+
+  .overlay-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .ov-back-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    border: 1px solid #64748b;
+    background: #020617aa;
+    color: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .ov-queue-btn {
+    font-size: 11px;
+    border-radius: 999px;
+    padding: 6px 12px;
+    background: #020617aa;
+    border: 1px solid #22d3eeaa;
+    color: #e0f2fe;
+    cursor: pointer;
+  }
+
+  .overlay-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
+  .poster-card {
+    margin-top: 10px;
+    padding: 14px;
+    border-radius: 22px;
+    background: rgba(15,23,42,0.85);
+    border: 1px solid #1f2937;
+    box-shadow: 0 0 18px #020617;
+    backdrop-filter: blur(18px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    max-width: 360px;
+    width: 100%;
+  }
+
+  .poster-wrapper {
+    position: relative;
+    width: 210px;
+    height: 210px;
+  }
+
+  .poster-circle {
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    background-size: cover;
+    background-position: center;
+    border: 4px solid #0f172a;
+    box-shadow: 0 0 30px #22d3ee88;
+    animation: spinDisc 18s linear infinite;
+    position: relative;
+    overflow: hidden;
+  }
+
+  @keyframes spinDisc {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  .poster-circle.paused {
+    animation-play-state: paused;
+  }
+
+  .poster-center {
+    position: absolute;
+    inset: 50%;
+    transform: translate(-50%, -50%);
+    width: 46px;
+    height: 46px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 0, #e5e7eb, #020617);
+    border: 3px solid #0f172a;
+    box-shadow: inset 0 0 10px #020617;
+  }
+
+  .tonearm {
+    position: absolute;
+    width: 72px;
+    height: 72px;
+    right: -6px;
+    top: 12px;
+    transform-origin: left center;
+    transform: rotate(18deg);
+  }
+
+  .tonearm-line {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 60px;
+    height: 3px;
+    background: #e5e7ebcc;
+    border-radius: 999px;
+  }
+
+  .tonearm-head {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 14px;
+    height: 24px;
+    background: #020617;
+    border-radius: 4px;
+    border: 2px solid #e5e7ebcc;
+    transform: translateY(-50%);
+  }
+
+  .overlay-title {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .overlay-sub {
+    font-size: 12px;
+    color: #cbd5f5;
+    text-align: center;
+  }
+
+  .overlay-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .overlay-buttons-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  /* big morphing play/pause in overlay */
+  .big-play,
+  .big-pause {
+    width: 60px;
+    height: 60px;
+    border-radius: 999px;
+    border: none;
+    font-size: 26px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+  }
+
+  .big-play {
+    background: #0ea5e9;
+    color: #f9fafb;
+    box-shadow: 0 0 26px #0ea5e9;
+  }
+  .big-pause {
+    background: #22c55e;
+    color: #f9fafb;
+    box-shadow: 0 0 26px #22c55e;
+    display: none;
+  }
+
+  .big-play:hover,
+  .big-pause:hover {
+    transform: scale(1.04) translateY(-1px);
+  }
+
+  .overlay-seek {
+    width: 100%;
+  }
+
+  .overlay-seek label {
+    font-size: 11px;
+    color: #9ca3af;
+  }
+
+  .overlay-seekbar {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #9ca3af;
+  }
+
+  .overlay-seekbar input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 999px;
+    background: #1f2937;
+    outline: none;
+    overflow: hidden;
+  }
+
+  .overlay-seekbar input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px;
+    background: transparent;
+  }
+  .overlay-seekbar input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #22d3ee;
+    border: 2px solid #020617;
+    box-shadow: 0 0 12px #22d3ee;
+    margin-top: -5px;
+    cursor: pointer;
+  }
+
+  .overlay-seekbar input[type="range"]::-moz-range-track {
+    height: 6px;
+    background: transparent;
+  }
+  .overlay-seekbar input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #22d3ee;
+    border: 2px solid #020617;
+    box-shadow: 0 0 12px #22d3ee;
+    cursor: pointer;
+  }
+
+  .overlay-footer-text {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #e5e7ebcc;
+    text-align: center;
+  }
 </style>
 </head>
 
@@ -397,7 +731,7 @@
 <div class="bg-animate"></div>
 
 <h1>Listen by GVS</h1>
-<p class="sub">Neon Music Player · Queue · Seek Bar · Next / Previous · Animated UI</p>
+<p class="sub">Neon Music Player · Full Player · Queue · Seek Bar · Rotating Posters</p>
 
 <div class="layout">
   <!-- LEFT: SONG LIBRARY -->
@@ -418,16 +752,19 @@
   </section>
 </div>
 
-<!-- BOTTOM PLAYER -->
-<div class="player">
+<!-- BOTTOM MINI PLAYER -->
+<div class="player" id="miniPlayer">
   <div class="player-top">
-    <div class="now-info">
-      <span class="now-label">NOW PLAYING</span>
-      <span class="now-title" id="nowTitle">No song selected</span>
-      <span class="now-sub" id="nowSub">Tap a song from the list to start playback.</span>
+    <div class="mini-left">
+      <div class="mini-cover" id="miniCover"></div>
+      <div class="now-info">
+        <span class="now-label">NOW PLAYING</span>
+        <span class="now-title" id="nowTitle">No song selected</span>
+        <span class="now-sub" id="nowSub">Tap a song from the list to start</span>
+      </div>
     </div>
 
-    <div class="controls">
+    <div class="controls" onclick="event.stopPropagation();">
       <button class="small-btn" id="prevBtn">⏮</button>
       <button class="play-btn" id="playBtn">▶</button>
       <button class="pause-btn" id="pauseBtn">❚❚</button>
@@ -435,10 +772,59 @@
     </div>
   </div>
 
-  <div class="seek-row">
+  <div class="seek-row" onclick="event.stopPropagation();">
     <span id="currentTime">0:00</span>
     <input type="range" id="seekBar" min="0" max="100" value="0" />
     <span id="duration">0:00</span>
+  </div>
+</div>
+
+<!-- FULL PLAYER OVERLAY -->
+<div class="overlay" id="fullOverlay">
+  <div class="overlay-backdrop" id="overlayBackdrop"></div>
+  <div class="overlay-tint"></div>
+  <div class="overlay-content">
+    <div class="overlay-topbar">
+      <button class="ov-back-btn" id="overlayBackBtn">←</button>
+      <button class="ov-queue-btn">Queue</button>
+    </div>
+
+    <div class="overlay-main">
+      <div class="poster-card">
+        <div class="poster-wrapper">
+          <div class="poster-circle paused" id="bigPoster"></div>
+          <div class="poster-center"></div>
+          <div class="tonearm" id="tonearm">
+            <div class="tonearm-line"></div>
+            <div class="tonearm-head"></div>
+          </div>
+        </div>
+        <div class="overlay-title" id="ovTitle">No song selected</div>
+        <div class="overlay-sub" id="ovSub">Tap a song from the list to start</div>
+      </div>
+
+      <div class="overlay-controls">
+        <div class="overlay-buttons-row">
+          <button class="small-btn" id="ovPrevBtn">⏮</button>
+          <button class="big-play" id="bigPlayBtn">▶</button>
+          <button class="big-pause" id="bigPauseBtn">❚❚</button>
+          <button class="small-btn" id="ovNextBtn">⏭</button>
+        </div>
+
+        <div class="overlay-seek">
+          <label>Progress</label>
+          <div class="overlay-seekbar">
+            <span id="ovCurrentTime">0:00</span>
+            <input type="range" id="ovSeekBar" min="0" max="100" value="0" />
+            <span id="ovDuration">0:00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="overlay-footer-text">
+        Developed by <strong>G Vedha Sai</strong>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -446,55 +832,67 @@
 <audio id="audioPlayer"></audio>
 
 <script>
-  // --- SONG DATA (7 tracks) ---
+  // SONG DATA
+  // cover: either direct image URL or we derive from YouTube ID if present in filename
   const tracks = [
     {
       title: "Khaleja – Sada Siva (Epic BGM)",
       subtitle: "Listen it by GVS",
-      file: "khaleja_sada_siva_epic_bgm.mp3"
+      file: "khaleja_sada_siva_epic_bgm.mp3",
+      // generic image (replace with your own if you want)
+      cover: "https://images.pexels.com/photos/164745/pexels-photo-164745.jpeg?auto=compress&cs=tinysrgb&w=800"
     },
     {
       title: "Satranga",
       subtitle: "From ANIMAL · Listen it by GVS",
-      file: "ANIMAL_ SATRANGA(Song) Ranbir Kapoor,RashmikaSandeep VArijit,Shreyas P,Siddharth-Garima Bhushan K.mp3"
+      file: "ANIMAL_ SATRANGA(Song) Ranbir Kapoor,RashmikaSandeep VArijit,Shreyas P,Siddharth-Garima Bhushan K.mp3",
+      cover: "https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&w=800"
     },
     {
       title: "Aavan Jaavan",
       subtitle: "From WAR 2 · Listen it by GVS",
-      file: "Aavan Jaavan Song _ WAR 2 _ Hrithik Roshan, Kiara Advani _ Pritam, Arijit Singh, Nikhita _ Amitabh B [enjkcCdAlXc].mp3"
+      file: "Aavan Jaavan Song _ WAR 2 _ Hrithik Roshan, Kiara Advani _ Pritam, Arijit Singh, Nikhita _ Amitabh B [enjkcCdAlXc].mp3",
+      cover: "https://img.youtube.com/vi/enjkcCdAlXc/hqdefault.jpg"
     },
     {
       title: "Humsafar",
       subtitle: "Listen it by GVS",
-      file: "Humsafar Song _ Saiyaara _ Ahaan Panday _ Aneet Padda_ Sachet Tandon, Parampara Tandon, Irshad Kamil [D9DiMnlpFK8].mp3"
+      file: "Humsafar Song _ Saiyaara _ Ahaan Panday _ Aneet Padda_ Sachet Tandon, Parampara Tandon, Irshad Kamil [D9DiMnlpFK8].mp3",
+      cover: "https://img.youtube.com/vi/D9DiMnlpFK8/hqdefault.jpg"
     },
     {
       title: "Powerhouse",
       subtitle: "Coolie Superstar · Listen it by GVS",
-      file: "Powerhouse - Video Song Coolie Superstar Rajinikanth Sun Pictures Lokesh Anirudh.mp3"
+      file: "Powerhouse - Video Song Coolie Superstar Rajinikanth Sun Pictures Lokesh Anirudh.mp3",
+      cover: "https://images.pexels.com/photos/1647458/pexels-photo-1647458.jpeg?auto=compress&cs=tinysrgb&w=800"
     },
     {
       title: "Sarkaaru Raa",
       subtitle: "Daaku Maharaaj · Listen it by GVS",
-      file: "Sarkaru Raa Lyric Video _ Daaku Maharaaj _ Nandamuri Balakrishna _ Bobby Kolli _ Thaman S [YB4U_RpbuQQ].mp3"
+      file: "Sarkaru Raa Lyric Video _ Daaku Maharaaj _ Nandamuri Balakrishna _ Bobby Kolli _ Thaman S [YB4U_RpbuQQ].mp3",
+      cover: "https://img.youtube.com/vi/YB4U_RpbuQQ/hqdefault.jpg"
     },
     {
       title: "Sooreede",
       subtitle: "Salaar · Listen it by GVS",
-      file: "Sooreede - Video Song _ Salaar _ Prabhas _ Prithviraj _ Prashanth Neel _ Ravi Basrur _ Hombale Films [2n7lsBRfmA0].mp3"
+      file: "Sooreede - Video Song _ Salaar _ Prabhas _ Prithviraj _ Prashanth Neel _ Ravi Basrur _ Hombale Films [2n7lsBRfmA0].mp3",
+      cover: "https://img.youtube.com/vi/2n7lsBRfmA0/hqdefault.jpg"
     }
   ];
 
-  // Queue is an array of indexes into tracks[]
+  // Queue is an array of track indexes
   let queue = tracks.map((_, i) => i);
   let currentQueueIndex = 0;
+
   const audio = document.getElementById("audioPlayer");
 
-  // DOM elements
+  // DOM references
   const libraryList = document.getElementById("libraryList");
   const queueList = document.getElementById("queueList");
   const resetQueueBtn = document.getElementById("resetQueueBtn");
 
+  const miniPlayer = document.getElementById("miniPlayer");
+  const miniCover = document.getElementById("miniCover");
   const nowTitle = document.getElementById("nowTitle");
   const nowSub = document.getElementById("nowSub");
   const playBtn = document.getElementById("playBtn");
@@ -505,7 +903,23 @@
   const currentTimeEl = document.getElementById("currentTime");
   const durationEl = document.getElementById("duration");
 
-  // --- Rendering functions ---
+  // Full overlay elements
+  const fullOverlay = document.getElementById("fullOverlay");
+  const overlayBackdrop = document.getElementById("overlayBackdrop");
+  const overlayBackBtn = document.getElementById("overlayBackBtn");
+  const bigPoster = document.getElementById("bigPoster");
+  const tonearm = document.getElementById("tonearm");
+  const ovTitle = document.getElementById("ovTitle");
+  const ovSub = document.getElementById("ovSub");
+  const bigPlayBtn = document.getElementById("bigPlayBtn");
+  const bigPauseBtn = document.getElementById("bigPauseBtn");
+  const ovPrevBtn = document.getElementById("ovPrevBtn");
+  const ovNextBtn = document.getElementById("ovNextBtn");
+  const ovSeekBar = document.getElementById("ovSeekBar");
+  const ovCurrentTime = document.getElementById("ovCurrentTime");
+  const ovDuration = document.getElementById("ovDuration");
+
+  // --- RENDER LIBRARY & QUEUE ---
   function renderLibrary() {
     libraryList.innerHTML = "";
     tracks.forEach((track, index) => {
@@ -561,15 +975,35 @@
     });
   }
 
-  // --- Player logic ---
+  // --- PLAYER LOGIC ---
   function updatePlayPauseUI(isPlaying) {
     if (isPlaying) {
       playBtn.style.display = "none";
       pauseBtn.style.display = "inline-flex";
+      bigPlayBtn.style.display = "none";
+      bigPauseBtn.style.display = "flex";
+      bigPoster.classList.remove("paused");
+      miniCover.classList.add("spin");
     } else {
       playBtn.style.display = "inline-flex";
       pauseBtn.style.display = "none";
+      bigPlayBtn.style.display = "flex";
+      bigPauseBtn.style.display = "none";
+      bigPoster.classList.add("paused");
+      miniCover.classList.remove("spin");
     }
+  }
+
+  function setSongUI(track) {
+    nowTitle.textContent = track.title;
+    nowSub.textContent = track.subtitle;
+    ovTitle.textContent = track.title;
+    ovSub.textContent = track.subtitle;
+
+    // Set poster images
+    miniCover.style.backgroundImage = `url('${track.cover}')`;
+    bigPoster.style.backgroundImage = `url('${track.cover}')`;
+    overlayBackdrop.style.backgroundImage = `url('${track.cover}')`;
   }
 
   function loadCurrentTrack(autoplay = true) {
@@ -577,13 +1011,15 @@
     const trackIndex = queue[currentQueueIndex];
     const track = tracks[trackIndex];
 
-    nowTitle.textContent = track.title;
-    nowSub.textContent = track.subtitle;
+    setSongUI(track);
 
     audio.src = track.file;
     if (autoplay) {
-      audio.play();
-      updatePlayPauseUI(true);
+      audio.play().then(() => {
+        updatePlayPauseUI(true);
+      }).catch(() => {
+        updatePlayPauseUI(false);
+      });
     } else {
       updatePlayPauseUI(false);
     }
@@ -613,8 +1049,66 @@
     loadCurrentTrack(true);
   }
 
-  // --- Event wiring for controls ---
-  playBtn.onclick = () => {
+  // --- TIME & SEEKBARS ---
+  function formatTime(sec) {
+    if (isNaN(sec)) return "0:00";
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  }
+
+  function updateSeekBarBackground(barElem, percent) {
+    barElem.style.background = `linear-gradient(to right, #ffffff 0%, #ffffff ${percent}%, #1f2937 ${percent}%, #1f2937 100%)`;
+  }
+
+  audio.addEventListener("loadedmetadata", () => {
+    durationEl.textContent = formatTime(audio.duration);
+    ovDuration.textContent = formatTime(audio.duration);
+  });
+
+  audio.addEventListener("timeupdate", () => {
+    if (!audio.duration) return;
+    const current = audio.currentTime;
+    const duration = audio.duration;
+    const percent = (current / duration) * 100;
+
+    currentTimeEl.textContent = formatTime(current);
+    durationEl.textContent = formatTime(duration);
+    seekBar.value = percent;
+    updateSeekBarBackground(seekBar, percent);
+
+    ovCurrentTime.textContent = formatTime(current);
+    ovDuration.textContent = formatTime(duration);
+    ovSeekBar.value = percent;
+    updateSeekBarBackground(ovSeekBar, percent);
+
+    // tonearm slight move
+    tonearm.style.transform = `rotate(${18 + percent * 0.4}deg)`;
+  });
+
+  seekBar.addEventListener("input", () => {
+    if (!audio.duration) return;
+    const percent = seekBar.value;
+    const newTime = (percent / 100) * audio.duration;
+    audio.currentTime = newTime;
+    updateSeekBarBackground(seekBar, percent);
+  });
+
+  ovSeekBar.addEventListener("input", () => {
+    if (!audio.duration) return;
+    const percent = ovSeekBar.value;
+    const newTime = (percent / 100) * audio.duration;
+    audio.currentTime = newTime;
+    updateSeekBarBackground(ovSeekBar, percent);
+  });
+
+  audio.addEventListener("ended", () => {
+    playNext();
+  });
+
+  // --- MINI PLAYER EVENTS ---
+  playBtn.onclick = (e) => {
+    e.stopPropagation();
     if (!audio.src) {
       currentQueueIndex = 0;
       loadCurrentTrack(true);
@@ -624,13 +1118,21 @@
     }
   };
 
-  pauseBtn.onclick = () => {
+  pauseBtn.onclick = (e) => {
+    e.stopPropagation();
     audio.pause();
     updatePlayPauseUI(false);
   };
 
-  nextBtn.onclick = playNext;
-  prevBtn.onclick = playPrev;
+  nextBtn.onclick = (e) => {
+    e.stopPropagation();
+    playNext();
+  };
+
+  prevBtn.onclick = (e) => {
+    e.stopPropagation();
+    playPrev();
+  };
 
   resetQueueBtn.onclick = () => {
     queue = tracks.map((_, i) => i);
@@ -638,51 +1140,40 @@
     renderQueue();
   };
 
-  // --- Time + seek bar handling ---
-  function formatTime(sec) {
-    if (isNaN(sec)) return "0:00";
-    const m = Math.floor(sec / 60);
-    const s = Math.floor(sec % 60);
-    return `${m}:${s.toString().padStart(2, "0")}`;
-  }
-
-  function updateSeekBarBackground(percent) {
-    // White / cyan line up to current position
-    seekBar.style.background = `linear-gradient(to right, #ffffff 0%, #ffffff ${percent}%, #1f2937 ${percent}%, #1f2937 100%)`;
-  }
-
-  audio.addEventListener("loadedmetadata", () => {
-    durationEl.textContent = formatTime(audio.duration);
+  // Open full player when tapping mini-player background
+  miniPlayer.addEventListener("click", () => {
+    fullOverlay.classList.add("visible");
   });
 
-  audio.addEventListener("timeupdate", () => {
-    if (!audio.duration) return;
-    const current = audio.currentTime;
-    const duration = audio.duration;
-    currentTimeEl.textContent = formatTime(current);
-    durationEl.textContent = formatTime(duration);
-    const percent = (current / duration) * 100;
-    seekBar.value = percent;
-    updateSeekBarBackground(percent);
+  overlayBackBtn.addEventListener("click", () => {
+    fullOverlay.classList.remove("visible");
   });
 
-  seekBar.addEventListener("input", () => {
-    if (!audio.duration) return;
-    const percent = seekBar.value;
-    const newTime = (percent / 100) * audio.duration;
-    audio.currentTime = newTime;
-    updateSeekBarBackground(percent);
-  });
+  // FULL OVERLAY CONTROLS
+  bigPlayBtn.onclick = () => {
+    if (!audio.src) {
+      currentQueueIndex = 0;
+      loadCurrentTrack(true);
+    } else {
+      audio.play();
+      updatePlayPauseUI(true);
+    }
+  };
 
-  audio.addEventListener("ended", () => {
-    playNext();
-  });
+  bigPauseBtn.onclick = () => {
+    audio.pause();
+    updatePlayPauseUI(false);
+  };
 
-  // Initial render
+  ovNextBtn.onclick = playNext;
+  ovPrevBtn.onclick = playPrev;
+
+  // INITIAL RENDER
   renderLibrary();
   renderQueue();
   updatePlayPauseUI(false);
-  updateSeekBarBackground(0);
+  updateSeekBarBackground(seekBar, 0);
+  updateSeekBarBackground(ovSeekBar, 0);
 </script>
 
 </body>
