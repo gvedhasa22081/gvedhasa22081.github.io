@@ -2,48 +2,70 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Listen With By GVS – Music App</title>
+<title>Listen by GVS – Neon Music App</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     min-height: 100vh;
-    background: #020617;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    color: white;
+    color: #f9fafb;
     overflow-x: hidden;
+    background: #020617;
   }
 
-  /* Neon background */
+  /* Animated neon background (changes every ~2 seconds) */
   .bg {
     position: fixed;
     inset: 0;
-    background:
-      radial-gradient(circle at 20% 0%, #22d3ee22, transparent),
-      radial-gradient(circle at 80% 0%, #8b5cf622, transparent),
-      radial-gradient(circle at 50% 100%, #f9731622, transparent);
-    animation: hue 12s infinite alternate;
-    z-index: -1;
-  }
-  @keyframes hue {
-    from { filter: hue-rotate(0deg); }
-    to   { filter: hue-rotate(150deg); }
+    z-index: -2;
+    background: radial-gradient(circle at top, #0f172a, #020617 55%, #000 100%);
   }
 
+  .bg-animate {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(circle at 0% 0%, #22d3ee35, transparent 55%),
+      radial-gradient(circle at 100% 0%, #a855f735, transparent 55%),
+      radial-gradient(circle at 50% 100%, #f9731635, transparent 55%);
+    animation: hueShift 6s infinite linear;
+  }
+
+  @keyframes hueShift {
+    0%   { filter: hue-rotate(0deg);    opacity: 0.8; }
+    25%  { filter: hue-rotate(60deg);   opacity: 0.9; }
+    50%  { filter: hue-rotate(120deg);  opacity: 0.85; }
+    75%  { filter: hue-rotate(200deg);  opacity: 0.9; }
+    100% { filter: hue-rotate(320deg);  opacity: 0.8; }
+  }
+
+  /* Page layout */
   h1 {
     text-align: center;
-    padding: 18px 0 6px;
-    font-size: 26px;
+    padding: 18px 0 4px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
     color: #22d3ee;
-    font-weight: 700;
-    text-shadow: 0 0 16px #22d3ee;
+    text-shadow: 0 0 18px #22d3ee;
+    text-transform: uppercase;
+    animation: titlePulse 2s infinite ease-in-out;
   }
+
+  @keyframes titlePulse {
+    0%, 100% { transform: translateY(0); opacity: 0.9; }
+    50%      { transform: translateY(-2px); opacity: 1; }
+  }
+
   .sub {
     text-align: center;
     font-size: 12px;
-    color: #9ca3af;
-    margin-bottom: 10px;
+    color: #cbd5f5;
+    margin-bottom: 14px;
+    opacity: 0.85;
   }
 
   .layout {
@@ -51,55 +73,88 @@
     max-width: 960px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
+    grid-template-columns: 1.15fr 0.85fr;
     gap: 16px;
-    padding-bottom: 110px; /* space for bottom player */
+    padding-bottom: 120px; /* space for bottom player */
   }
+
   @media (max-width: 780px) {
     .layout {
       grid-template-columns: 1fr;
+      padding-bottom: 140px;
     }
   }
 
   .panel {
-    background: rgba(15, 23, 42, 0.92);
-    border-radius: 16px;
-    border: 1px solid #1f2933;
+    background: rgba(15, 23, 42, 0.94);
+    border-radius: 18px;
+    border: 1px solid #1f2937;
     padding: 12px;
-    box-shadow: 0 0 12px #020617;
+    box-shadow: 0 0 18px #020617;
+    backdrop-filter: blur(16px);
+    animation: panelFade 0.6s ease-out;
+  }
+
+  @keyframes panelFade {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   .panel-title {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     margin-bottom: 4px;
   }
   .panel-sub {
     font-size: 11px;
     color: #9ca3af;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
 
   /* Library tracks */
+  #libraryList {
+    margin-top: 2px;
+  }
+
   .track {
     padding: 10px;
-    border-radius: 12px;
-    background: rgba(15, 23, 42, 0.9);
+    border-radius: 14px;
+    background: radial-gradient(circle at 0 0, #020617, #020617);
     border: 1px solid #334155;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
     cursor: pointer;
-    transition: 0.18s;
+    transition: 0.18s ease;
+    position: relative;
+    overflow: hidden;
   }
+
+  .track::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top left, #22d3ee44, transparent 55%);
+    opacity: 0;
+    transition: opacity 0.18s ease;
+    pointer-events: none;
+  }
+
+  .track:hover::before {
+    opacity: 1;
+  }
+
   .track:hover {
     border-color: #22d3ee;
-    box-shadow: 0 0 12px #22d3ee88;
+    box-shadow: 0 0 14px #22d3ee88;
+    transform: translateY(-1px);
   }
+
   .track-left {
     display: flex;
     flex-direction: column;
+    gap: 2px;
   }
   .track-title {
     font-size: 14px;
@@ -113,6 +168,7 @@
     font-size: 18px;
     color: #22d3ee;
     margin-left: 10px;
+    text-shadow: 0 0 10px #22d3ee99;
   }
 
   /* Queue list */
@@ -129,55 +185,70 @@
     border-radius: 10px;
     border: 1px solid #1f2933;
     margin-bottom: 6px;
-    background: rgba(15, 23, 42, 0.9);
+    background: rgba(15, 23, 42, 0.96);
+    transition: 0.16s ease;
   }
+  .queue-item:hover {
+    border-color: #22d3eeaa;
+    box-shadow: 0 0 10px #22d3ee55;
+  }
+
   .queue-buttons button {
     font-size: 11px;
-    padding: 2px 6px;
+    padding: 2px 7px;
     margin-left: 4px;
-    border-radius: 8px;
+    border-radius: 999px;
     border: 1px solid #334155;
     background: #020617;
     color: #e5e7eb;
     cursor: pointer;
+    transition: 0.18s ease;
   }
   .queue-buttons button:hover {
     border-color: #22d3ee;
     color: #22d3ee;
+    box-shadow: 0 0 8px #22d3ee66;
   }
   .queue-reset {
-    margin-top: 4px;
+    margin-top: 6px;
     font-size: 11px;
     border-radius: 999px;
-    padding: 4px 10px;
-    border: 1px solid #22d3ee;
-    background: #020617;
+    padding: 5px 12px;
+    border: 1px solid #22d3eeaa;
+    background: radial-gradient(circle at 0 0, #0f172a, #020617);
     color: #e0f2fe;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
   .queue-reset:hover {
-    box-shadow: 0 0 10px #22d3ee88;
+    box-shadow: 0 0 12px #22d3eeaa;
   }
 
   /* Bottom player */
   .player {
     position: fixed;
-    bottom: 8px;
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
-    width: min(94%, 800px);
-    background: rgba(15,23,42,0.96);
+    width: min(96%, 860px);
+    background: radial-gradient(circle at 0 0, #020617, #020617f7);
     border-radius: 20px;
-    border: 1px solid #22d3ee;
-    box-shadow: 0 0 20px #22d3ee66;
-    padding: 8px 12px 10px;
+    border: 1px solid #22d3eeaa;
+    box-shadow: 0 0 20px #0ea5e966;
+    padding: 10px 14px 10px;
+    backdrop-filter: blur(18px);
   }
 
   .player-top {
     display: flex;
     justify-content: space-between;
+    gap: 16px;
     align-items: center;
+    flex-wrap: wrap;
   }
+
   .now-info span { display: block; }
   .now-label {
     font-size: 10px;
@@ -197,7 +268,10 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    justify-content: center;
+    flex: 1;
   }
+
   .small-btn {
     width: 32px;
     height: 32px;
@@ -207,46 +281,51 @@
     color: #e5e7eb;
     font-size: 14px;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.18s ease;
   }
   .small-btn:hover {
     border-color: #22d3ee;
     color: #22d3ee;
+    box-shadow: 0 0 10px #22d3ee88;
+    transform: translateY(-1px);
   }
 
-  /* Neon PLAY */
-  .play-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 999px;
-    border: none;
-    background: #0ea5e9;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    box-shadow: 0 0 18px #0ea5e9;
-  }
-  .play-btn:hover {
-    transform: scale(1.05);
-  }
-
-  /* Neon PAUSE */
+  /* Centred neon play/pause */
+  .play-btn,
   .pause-btn {
-    width: 40px;
-    height: 40px;
+    width: 46px;
+    height: 46px;
     border-radius: 999px;
     border: none;
-    background: #22c55e;
-    color: white;
-    font-size: 20px;
+    font-size: 22px;
     cursor: pointer;
-    box-shadow: 0 0 18px #22c55e;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.18s ease;
+  }
+
+  .play-btn {
+    background: #0ea5e9;
+    color: #f9fafb;
+    box-shadow: 0 0 20px #0ea5e9;
+  }
+  .pause-btn {
+    background: #22c55e;
+    color: #f9fafb;
+    box-shadow: 0 0 20px #22c55e;
     display: none;
   }
+
+  .play-btn:hover,
   .pause-btn:hover {
-    transform: scale(1.05);
+    transform: translateY(-1px) scale(1.04);
   }
 
-  /* Seek bar */
+  /* Seek bar row with white progress line */
   .seek-row {
     display: flex;
     align-items: center;
@@ -259,40 +338,66 @@
     flex: 1;
     -webkit-appearance: none;
     appearance: none;
-    height: 4px;
+    height: 5px;
     border-radius: 999px;
     background: #1f2937;
     outline: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Track background for progress (white line) */
+  .seek-row input[type="range"]::-webkit-slider-runnable-track {
+    height: 5px;
+    background: transparent;
   }
   .seek-row input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: #22d3ee;
-    box-shadow: 0 0 8px #22d3ee;
+    box-shadow: 0 0 10px #22d3ee;
     cursor: pointer;
+    margin-top: -4.5px;
+    border: 2px solid #0f172a;
+  }
+
+  .seek-row input[type="range"]::-moz-range-track {
+    height: 5px;
+    background: transparent;
   }
   .seek-row input[type="range"]::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: #22d3ee;
-    border: none;
-    box-shadow: 0 0 8px #22d3ee;
+    border: 2px solid #0f172a;
+    box-shadow: 0 0 10px #22d3ee;
     cursor: pointer;
   }
 
   audio { display: none; }
+
+  @media (max-width: 600px) {
+    .player-top {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .controls {
+      justify-content: flex-start;
+    }
+  }
 </style>
 </head>
 
 <body>
 <div class="bg"></div>
+<div class="bg-animate"></div>
 
-<h1>Listen With By GVS</h1>
-<p class="sub">Neon Music Player · Queue · Seek Bar · Next & Previous</p>
+<h1>Listen by GVS</h1>
+<p class="sub">Neon Music Player · Queue · Seek Bar · Next / Previous · Animated UI</p>
 
 <div class="layout">
   <!-- LEFT: SONG LIBRARY -->
@@ -307,7 +412,9 @@
     <div class="panel-title">Play Queue</div>
     <div class="panel-sub">Use ↑ / ↓ to choose the order in which songs will play.</div>
     <ul id="queueList" class="queue-list"></ul>
-    <button class="queue-reset" id="resetQueueBtn">Reset queue to original order</button>
+    <button class="queue-reset" id="resetQueueBtn">
+      ⟳ Reset queue to original order
+    </button>
   </section>
 </div>
 
@@ -317,7 +424,7 @@
     <div class="now-info">
       <span class="now-label">NOW PLAYING</span>
       <span class="now-title" id="nowTitle">No song selected</span>
-      <span class="now-sub" id="nowSub">Tap a song from the list to start</span>
+      <span class="now-sub" id="nowSub">Tap a song from the list to start playback.</span>
     </div>
 
     <div class="controls">
@@ -342,18 +449,18 @@
   // --- SONG DATA (7 tracks) ---
   const tracks = [
     {
-      title: "Khaleja \u2013 Sada Siva (Epic BGM)",
+      title: "Khaleja – Sada Siva (Epic BGM)",
       subtitle: "Listen it by GVS",
       file: "khaleja_sada_siva_epic_bgm.mp3"
     },
     {
       title: "Satranga",
-      subtitle: "From ANIMAL \u00b7 Listen it by GVS",
+      subtitle: "From ANIMAL · Listen it by GVS",
       file: "ANIMAL_ SATRANGA(Song) Ranbir Kapoor,RashmikaSandeep VArijit,Shreyas P,Siddharth-Garima Bhushan K.mp3"
     },
     {
       title: "Aavan Jaavan",
-      subtitle: "From WAR 2 \u00b7 Listen it by GVS",
+      subtitle: "From WAR 2 · Listen it by GVS",
       file: "Aavan Jaavan Song _ WAR 2 _ Hrithik Roshan, Kiara Advani _ Pritam, Arijit Singh, Nikhita _ Amitabh B [enjkcCdAlXc].mp3"
     },
     {
@@ -363,24 +470,24 @@
     },
     {
       title: "Powerhouse",
-      subtitle: "Coolie Superstar \u00b7 Listen it by GVS",
+      subtitle: "Coolie Superstar · Listen it by GVS",
       file: "Powerhouse - Video Song Coolie Superstar Rajinikanth Sun Pictures Lokesh Anirudh.mp3"
     },
     {
       title: "Sarkaaru Raa",
-      subtitle: "Daaku Maharaaj \u00b7 Listen it by GVS",
+      subtitle: "Daaku Maharaaj · Listen it by GVS",
       file: "Sarkaru Raa Lyric Video _ Daaku Maharaaj _ Nandamuri Balakrishna _ Bobby Kolli _ Thaman S [YB4U_RpbuQQ].mp3"
     },
     {
       title: "Sooreede",
-      subtitle: "Salaar \u00b7 Listen it by GVS",
+      subtitle: "Salaar · Listen it by GVS",
       file: "Sooreede - Video Song _ Salaar _ Prabhas _ Prithviraj _ Prashanth Neel _ Ravi Basrur _ Hombale Films [2n7lsBRfmA0].mp3"
     }
   ];
 
   // Queue is an array of indexes into tracks[]
   let queue = tracks.map((_, i) => i);
-  let currentQueueIndex = 0;      // position inside the queue
+  let currentQueueIndex = 0;
   const audio = document.getElementById("audioPlayer");
 
   // DOM elements
@@ -405,7 +512,6 @@
       const div = document.createElement("div");
       div.className = "track";
       div.onclick = () => playFromLibrary(index);
-
       div.innerHTML = `
         <div class="track-left">
           <span class="track-title">${track.title}</span>
@@ -451,7 +557,6 @@
 
       li.appendChild(label);
       li.appendChild(btnWrap);
-
       queueList.appendChild(li);
     });
   }
@@ -469,7 +574,6 @@
 
   function loadCurrentTrack(autoplay = true) {
     if (queue.length === 0) return;
-
     const trackIndex = queue[currentQueueIndex];
     const track = tracks[trackIndex];
 
@@ -509,10 +613,9 @@
     loadCurrentTrack(true);
   }
 
-  // --- Event wiring ---
+  // --- Event wiring for controls ---
   playBtn.onclick = () => {
     if (!audio.src) {
-      // no track selected yet: start from first in queue
       currentQueueIndex = 0;
       loadCurrentTrack(true);
     } else {
@@ -535,12 +638,17 @@
     renderQueue();
   };
 
-  // Audio time & seek-bar
+  // --- Time + seek bar handling ---
   function formatTime(sec) {
     if (isNaN(sec)) return "0:00";
     const m = Math.floor(sec / 60);
     const s = Math.floor(sec % 60);
     return `${m}:${s.toString().padStart(2, "0")}`;
+  }
+
+  function updateSeekBarBackground(percent) {
+    // White / cyan line up to current position
+    seekBar.style.background = `linear-gradient(to right, #ffffff 0%, #ffffff ${percent}%, #1f2937 ${percent}%, #1f2937 100%)`;
   }
 
   audio.addEventListener("loadedmetadata", () => {
@@ -549,16 +657,21 @@
 
   audio.addEventListener("timeupdate", () => {
     if (!audio.duration) return;
-    currentTimeEl.textContent = formatTime(audio.currentTime);
-    const percent = (audio.currentTime / audio.duration) * 100;
+    const current = audio.currentTime;
+    const duration = audio.duration;
+    currentTimeEl.textContent = formatTime(current);
+    durationEl.textContent = formatTime(duration);
+    const percent = (current / duration) * 100;
     seekBar.value = percent;
-    durationEl.textContent = formatTime(audio.duration);
+    updateSeekBarBackground(percent);
   });
 
   seekBar.addEventListener("input", () => {
     if (!audio.duration) return;
-    const newTime = (seekBar.value / 100) * audio.duration;
+    const percent = seekBar.value;
+    const newTime = (percent / 100) * audio.duration;
     audio.currentTime = newTime;
+    updateSeekBarBackground(percent);
   });
 
   audio.addEventListener("ended", () => {
@@ -569,6 +682,7 @@
   renderLibrary();
   renderQueue();
   updatePlayPauseUI(false);
+  updateSeekBarBackground(0);
 </script>
 
 </body>
