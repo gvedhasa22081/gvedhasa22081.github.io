@@ -705,7 +705,7 @@
 <div class="bg-animate"></div>
 
 <h1>Listen by GVS</h1>
-<p class="sub">Neon Music Player · Full Player · Queue · Rotating Posters · Downloads</p>
+<p class="sub">Neon Music Player · Full Player · Queue · Rotating Posters · Downloads · Notification</p>
 
 <div class="layout">
   <!-- LEFT: SONG LIBRARY -->
@@ -815,7 +815,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // SONG DATA (uses YouTube posters where possible)
+  // SONG DATA (YouTube posters)
   const tracks = [
     {
       title: "Khaleja – Sada Siva (Epic BGM)",
@@ -929,6 +929,7 @@
     }, 2000);
   }
 
+  // RENDER LIBRARY
   function renderLibrary() {
     libraryList.innerHTML = "";
     tracks.forEach((track, index) => {
@@ -1015,6 +1016,47 @@
     });
   }
 
+  // MEDIA SESSION HELPERS (Notification bar)
+  function setupMediaSession(track, isPlaying) {
+    if (!('mediaSession' in navigator)) return;
+
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: track.title,
+        artist: track.subtitle,
+        artwork: [
+          { src: track.cover, sizes: '512x512', type: 'image/jpeg' }
+        ]
+      });
+
+      navigator.mediaSession.setActionHandler('play', () => {
+        audio.play();
+        updatePlayPauseUI(true);
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        audio.pause();
+        updatePlayPauseUI(false);
+      });
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        playPrev();
+      });
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        playNext();
+      });
+
+      navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+    } catch (e) {
+      // ignore if not fully supported
+    }
+  }
+
+  function clearMediaSession() {
+    if (!('mediaSession' in navigator)) return;
+    try {
+      navigator.mediaSession.playbackState = 'none';
+    } catch (e) {}
+  }
+
   function updatePlayPauseUI(isPlaying) {
     if (isPlaying) {
       playBtn.style.display = "none";
@@ -1031,6 +1073,15 @@
       bigPoster.classList.add("paused");
       miniCover.classList.remove("spin");
     }
+
+    // Notification behavior: only show when playing
+    if (audio.src) {
+      const trackIndex = queue[currentQueueIndex];
+      const track = tracks[trackIndex];
+      setupMediaSession(track, isPlaying);
+    } else {
+      clearMediaSession();
+    }
   }
 
   function setSongUI(track) {
@@ -1042,22 +1093,6 @@
     miniCover.style.backgroundImage = `url('${track.cover}')`;
     bigPoster.style.backgroundImage = `url('${track.cover}')`;
     overlayBackdrop.style.backgroundImage = `url('${track.cover}')`;
-
-    if ('mediaSession' in navigator) {
-      try {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: track.title,
-          artist: track.subtitle,
-          artwork: [
-            { src: track.cover, sizes: '512x512', type: 'image/jpeg' }
-          ]
-        });
-        navigator.mediaSession.setActionHandler('play', () => { audio.play(); updatePlayPauseUI(true); });
-        navigator.mediaSession.setActionHandler('pause', () => { audio.pause(); updatePlayPauseUI(false); });
-        navigator.mediaSession.setActionHandler('previoustrack', () => playPrev());
-        navigator.mediaSession.setActionHandler('nexttrack', () => playNext());
-      } catch(e) {}
-    }
   }
 
   function loadCurrentTrack(autoplay = true) {
@@ -1136,6 +1171,14 @@
     updateSeekBarBackground(ovSeekBar, percent);
 
     tonearm.style.transform = `rotate(${18 + percent * 0.4}deg)`;
+  });
+
+  audio.addEventListener("play", () => {
+    updatePlayPauseUI(true);
+  });
+
+  audio.addEventListener("pause", () => {
+    updatePlayPauseUI(false);
   });
 
   seekBar.addEventListener("input", () => {
@@ -1217,7 +1260,6 @@
     const track = tracks[trackIndex];
     const link = document.createElement("a");
     link.href = track.file;
-    // sanitize title for filename
     const safeTitle = (track.title || "song").replace(/[^\w\s\-]/g, "").trim() || "song";
     link.download = safeTitle + ".mp3";
 
