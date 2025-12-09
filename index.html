@@ -22,7 +22,6 @@
     z-index: -3;
     background: radial-gradient(circle at top, #0f172a, #020617 55%, #000 100%);
   }
-
   .bg-animate {
     position: fixed;
     inset: 0;
@@ -33,7 +32,6 @@
       radial-gradient(circle at 50% 100%, #f9731635, transparent 55%);
     animation: hueShift 6s infinite linear;
   }
-
   @keyframes hueShift {
     0%   { filter: hue-rotate(0deg);    opacity: 0.8; }
     25%  { filter: hue-rotate(60deg);   opacity: 0.9; }
@@ -53,7 +51,6 @@
     text-transform: uppercase;
     animation: titlePulse 2s infinite ease-in-out;
   }
-
   @keyframes titlePulse {
     0%, 100% { transform: translateY(0); opacity: 0.9; }
     50%      { transform: translateY(-2px); opacity: 1; }
@@ -76,7 +73,6 @@
     gap: 16px;
     padding-bottom: 120px; /* space for bottom player */
   }
-
   @media (max-width: 780px) {
     .layout {
       grid-template-columns: 1fr;
@@ -92,7 +88,6 @@
     box-shadow: 0 0 18px #020617;
     backdrop-filter: blur(16px);
   }
-
   .panel-title {
     font-size: 15px;
     font-weight: 600;
@@ -104,11 +99,8 @@
     margin-bottom: 10px;
   }
 
-  /* Library tracks */
-  #libraryList {
-    margin-top: 2px;
-  }
-
+  /* Song Library */
+  #libraryList { margin-top: 2px; }
   .track {
     padding: 10px;
     border-radius: 14px;
@@ -123,7 +115,6 @@
     position: relative;
     overflow: hidden;
   }
-
   .track::before {
     content: "";
     position: absolute;
@@ -133,42 +124,51 @@
     transition: opacity 0.18s ease;
     pointer-events: none;
   }
-
-  .track:hover::before {
-    opacity: 1;
-  }
-
+  .track:hover::before { opacity: 1; }
   .track:hover {
     border-color: #22d3ee;
     box-shadow: 0 0 14px #22d3ee88;
     transform: translateY(-1px);
   }
+  .track-left { display: flex; flex-direction: column; gap: 2px; }
+  .track-title { font-size: 14px; font-weight: 600; }
+  .track-sub { font-size: 11px; color: #94a3b8; }
 
-  .track-left {
+  .track-right {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .track-title {
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .track-sub {
-    font-size: 11px;
-    color: #94a3b8;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
   }
   .track-index {
     font-size: 18px;
     color: #22d3ee;
-    margin-left: 10px;
     text-shadow: 0 0 10px #22d3ee99;
+  }
+  .download-btn {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid #334155;
+    background: #020617;
+    color: #e5e7eb;
+    cursor: pointer;
+    transition: 0.18s ease;
+  }
+  .download-btn:hover {
+    border-color: #22d3ee;
+    color: #22d3ee;
+    box-shadow: 0 0 8px #22d3ee66;
+  }
+  .download-btn.downloaded {
+    border-color: #22c55e;
+    color: #bbf7d0;
+    background: rgba(21, 128, 61, 0.2);
+    box-shadow: 0 0 10px #22c55e66;
   }
 
   /* Queue list */
-  .queue-list {
-    list-style: none;
-    margin-top: 4px;
-  }
+  .queue-list { list-style: none; margin-top: 4px; }
   .queue-item {
     display: flex;
     justify-content: space-between;
@@ -185,7 +185,6 @@
     border-color: #22d3eeaa;
     box-shadow: 0 0 10px #22d3ee55;
   }
-
   .queue-buttons button {
     font-size: 11px;
     padding: 2px 7px;
@@ -215,11 +214,9 @@
     align-items: center;
     gap: 6px;
   }
-  .queue-reset:hover {
-    box-shadow: 0 0 12px #22d3eeaa;
-  }
+  .queue-reset:hover { box-shadow: 0 0 12px #22d3eeaa; }
 
-  /* Bottom mini player */
+  /* Bottom mini-player */
   .player {
     position: fixed;
     bottom: 10px;
@@ -232,7 +229,7 @@
     box-shadow: 0 0 20px #0ea5e966;
     padding: 8px 12px 10px;
     backdrop-filter: blur(18px);
-    cursor: pointer; /* tap to open full player */
+    cursor: pointer;
   }
 
   .player-top {
@@ -249,7 +246,6 @@
     gap: 8px;
     min-width: 0;
   }
-
   .mini-cover {
     width: 32px;
     height: 32px;
@@ -262,7 +258,6 @@
     position: relative;
     overflow: hidden;
   }
-
   .mini-cover::after {
     content: "";
     position: absolute;
@@ -272,15 +267,10 @@
     opacity: 0;
     transition: opacity 0.2s ease;
   }
-
-  .mini-cover.spin::after {
-    opacity: 1;
-  }
-
+  .mini-cover.spin::after { opacity: 1; }
   .mini-cover.spin {
     animation: spinSlow 12s linear infinite;
   }
-
   @keyframes spinSlow {
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
@@ -338,7 +328,6 @@
     transform: translateY(-1px);
   }
 
-  /* Neon play/pause in mini player */
   .play-btn,
   .pause-btn {
     width: 40px;
@@ -352,7 +341,6 @@
     justify-content: center;
     transition: 0.18s ease;
   }
-
   .play-btn {
     background: #0ea5e9;
     color: #f9fafb;
@@ -364,7 +352,6 @@
     box-shadow: 0 0 20px #22c55e;
     display: none;
   }
-
   .play-btn:hover,
   .pause-btn:hover {
     transform: translateY(-1px) scale(1.04);
@@ -389,8 +376,6 @@
     position: relative;
     overflow: hidden;
   }
-
-  /* we'll draw white/cyan progress line in JS via background */
   .seek-row input[type="range"]::-webkit-slider-runnable-track {
     height: 5px;
     background: transparent;
@@ -407,32 +392,19 @@
     margin-top: -4.5px;
     border: 2px solid #0f172a;
   }
-
-  .seek-row input[type="range"]::-moz-range-track {
-    height: 5px;
-    background: transparent;
-  }
+  .seek-row input[type="range"]::-moz-range-track { height: 5px; background: transparent; }
   .seek-row input[type="range"]::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #22d3ee;
-    border: 2px solid #0f172a;
-    box-shadow: 0 0 10px #22d3ee;
-    cursor: pointer;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #22d3ee; border: 2px solid #0f172a;
+    box-shadow: 0 0 10px #22d3ee; cursor: pointer;
+  }
+
+  @media (max-width: 600px) {
+    .player-top { flex-direction: column; align-items: flex-start; }
+    .controls { justify-content: flex-start; }
   }
 
   audio { display: none; }
-
-  @media (max-width: 600px) {
-    .player-top {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .controls {
-      justify-content: flex-start;
-    }
-  }
 
   /* FULL PLAYER OVERLAY */
   .overlay {
@@ -441,10 +413,7 @@
     z-index: 20;
     display: none;
   }
-
-  .overlay.visible {
-    display: block;
-  }
+  .overlay.visible { display: block; }
 
   .overlay-backdrop {
     position: absolute;
@@ -454,11 +423,10 @@
     filter: blur(22px);
     transform: scale(1.06);
   }
-
   .overlay-tint {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at top, #020617cc, #020617f7);
+    background: linear-gradient(to bottom, #020617dd 0%, #020617f7 60%, #020617ff 100%);
   }
 
   .overlay-content {
@@ -477,7 +445,6 @@
     align-items: center;
     margin-bottom: 8px;
   }
-
   .ov-back-btn {
     width: 32px;
     height: 32px;
@@ -490,11 +457,15 @@
     justify-content: center;
     cursor: pointer;
   }
-
-  .ov-queue-btn {
+  .ov-top-right {
+    display: flex;
+    gap: 6px;
+  }
+  .ov-queue-btn,
+  .ov-small-icon {
     font-size: 11px;
     border-radius: 999px;
-    padding: 6px 12px;
+    padding: 6px 10px;
     background: #020617aa;
     border: 1px solid #22d3eeaa;
     color: #e0f2fe;
@@ -506,7 +477,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
     gap: 16px;
   }
 
@@ -531,7 +501,6 @@
     width: 210px;
     height: 210px;
   }
-
   .poster-circle {
     width: 100%;
     height: 100%;
@@ -544,15 +513,11 @@
     position: relative;
     overflow: hidden;
   }
-
   @keyframes spinDisc {
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
   }
-
-  .poster-circle.paused {
-    animation-play-state: paused;
-  }
+  .poster-circle.paused { animation-play-state: paused; }
 
   .poster-center {
     position: absolute;
@@ -575,7 +540,6 @@
     transform-origin: left center;
     transform: rotate(18deg);
   }
-
   .tonearm-line {
     position: absolute;
     left: 0;
@@ -585,7 +549,6 @@
     background: #e5e7ebcc;
     border-radius: 999px;
   }
-
   .tonearm-head {
     position: absolute;
     right: 0;
@@ -603,7 +566,6 @@
     font-weight: 700;
     text-align: center;
   }
-
   .overlay-sub {
     font-size: 12px;
     color: #cbd5f5;
@@ -624,8 +586,6 @@
     justify-content: center;
     gap: 20px;
   }
-
-  /* big morphing play/pause in overlay */
   .big-play,
   .big-pause {
     width: 60px;
@@ -639,7 +599,6 @@
     justify-content: center;
     transition: 0.2s ease;
   }
-
   .big-play {
     background: #0ea5e9;
     color: #f9fafb;
@@ -651,21 +610,16 @@
     box-shadow: 0 0 26px #22c55e;
     display: none;
   }
-
   .big-play:hover,
   .big-pause:hover {
     transform: scale(1.04) translateY(-1px);
   }
 
-  .overlay-seek {
-    width: 100%;
-  }
-
+  .overlay-seek { width: 100%; }
   .overlay-seek label {
     font-size: 11px;
     color: #9ca3af;
   }
-
   .overlay-seekbar {
     margin-top: 4px;
     display: flex;
@@ -674,7 +628,6 @@
     font-size: 11px;
     color: #9ca3af;
   }
-
   .overlay-seekbar input[type="range"] {
     flex: 1;
     -webkit-appearance: none;
@@ -685,7 +638,6 @@
     outline: none;
     overflow: hidden;
   }
-
   .overlay-seekbar input[type="range"]::-webkit-slider-runnable-track {
     height: 6px;
     background: transparent;
@@ -702,7 +654,6 @@
     margin-top: -5px;
     cursor: pointer;
   }
-
   .overlay-seekbar input[type="range"]::-moz-range-track {
     height: 6px;
     background: transparent;
@@ -723,6 +674,29 @@
     color: #e5e7ebcc;
     text-align: center;
   }
+
+  /* Toast message */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 70px;
+    transform: translateX(-50%);
+    background: rgba(15,23,42,0.96);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 12px;
+    border: 1px solid #22c55eaa;
+    color: #bbf7d0;
+    box-shadow: 0 0 18px #22c55e66;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 50;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
+  }
 </style>
 </head>
 
@@ -731,18 +705,18 @@
 <div class="bg-animate"></div>
 
 <h1>Listen by GVS</h1>
-<p class="sub">Neon Music Player · Full Player · Queue · Seek Bar · Rotating Posters</p>
+<p class="sub">Neon Music Player · Full Player · Queue · Rotating Posters · Downloads</p>
 
 <div class="layout">
   <!-- LEFT: SONG LIBRARY -->
   <section class="panel">
     <div class="panel-title">All Songs</div>
-    <div class="panel-sub">Tap a song to play it and jump to that position in the queue.</div>
+    <div class="panel-sub">Tap a song title to play · Use ↓ to download to phone storage.</div>
     <div id="libraryList"></div>
   </section>
 
   <!-- RIGHT: QUEUE EDITOR -->
-  <section class="panel">
+  <section class="panel" id="queuePanel">
     <div class="panel-title">Play Queue</div>
     <div class="panel-sub">Use ↑ / ↓ to choose the order in which songs will play.</div>
     <ul id="queueList" class="queue-list"></ul>
@@ -783,10 +757,16 @@
 <div class="overlay" id="fullOverlay">
   <div class="overlay-backdrop" id="overlayBackdrop"></div>
   <div class="overlay-tint"></div>
+
   <div class="overlay-content">
     <div class="overlay-topbar">
       <button class="ov-back-btn" id="overlayBackBtn">←</button>
-      <button class="ov-queue-btn">Queue</button>
+      <div class="ov-top-right">
+        <button class="ov-small-icon" id="downloadBtn">↓</button>
+        <button class="ov-small-icon" id="sleepBtn">⏰</button>
+        <button class="ov-small-icon" id="playlistBtn">＋</button>
+        <button class="ov-queue-btn" id="overlayQueueBtn">Queue</button>
+      </div>
     </div>
 
     <div class="overlay-main">
@@ -831,22 +811,23 @@
 <!-- HIDDEN AUDIO -->
 <audio id="audioPlayer"></audio>
 
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
 <script>
-  // SONG DATA
-  // cover: either direct image URL or we derive from YouTube ID if present in filename
+  // SONG DATA (uses YouTube posters where possible)
   const tracks = [
     {
       title: "Khaleja – Sada Siva (Epic BGM)",
       subtitle: "Listen it by GVS",
       file: "khaleja_sada_siva_epic_bgm.mp3",
-      // generic image (replace with your own if you want)
-      cover: "https://images.pexels.com/photos/164745/pexels-photo-164745.jpeg?auto=compress&cs=tinysrgb&w=800"
+      cover: "https://img.youtube.com/vi/m4qKrVQ6TRw/hqdefault.jpg"
     },
     {
       title: "Satranga",
       subtitle: "From ANIMAL · Listen it by GVS",
       file: "ANIMAL_ SATRANGA(Song) Ranbir Kapoor,RashmikaSandeep VArijit,Shreyas P,Siddharth-Garima Bhushan K.mp3",
-      cover: "https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&w=800"
+      cover: "https://img.youtube.com/vi/m4qKrVQ6TRw/hqdefault.jpg"
     },
     {
       title: "Aavan Jaavan",
@@ -864,7 +845,7 @@
       title: "Powerhouse",
       subtitle: "Coolie Superstar · Listen it by GVS",
       file: "Powerhouse - Video Song Coolie Superstar Rajinikanth Sun Pictures Lokesh Anirudh.mp3",
-      cover: "https://images.pexels.com/photos/1647458/pexels-photo-1647458.jpeg?auto=compress&cs=tinysrgb&w=800"
+      cover: "https://img.youtube.com/vi/6mWQq4VZKRU/hqdefault.jpg"
     },
     {
       title: "Sarkaaru Raa",
@@ -890,6 +871,7 @@
   const libraryList = document.getElementById("libraryList");
   const queueList = document.getElementById("queueList");
   const resetQueueBtn = document.getElementById("resetQueueBtn");
+  const queuePanel = document.getElementById("queuePanel");
 
   const miniPlayer = document.getElementById("miniPlayer");
   const miniCover = document.getElementById("miniCover");
@@ -907,6 +889,7 @@
   const fullOverlay = document.getElementById("fullOverlay");
   const overlayBackdrop = document.getElementById("overlayBackdrop");
   const overlayBackBtn = document.getElementById("overlayBackBtn");
+  const overlayQueueBtn = document.getElementById("overlayQueueBtn");
   const bigPoster = document.getElementById("bigPoster");
   const tonearm = document.getElementById("tonearm");
   const ovTitle = document.getElementById("ovTitle");
@@ -919,21 +902,78 @@
   const ovCurrentTime = document.getElementById("ovCurrentTime");
   const ovDuration = document.getElementById("ovDuration");
 
-  // --- RENDER LIBRARY & QUEUE ---
+  // Top-right icons
+  const downloadBtn = document.getElementById("downloadBtn");
+  const sleepBtn = document.getElementById("sleepBtn");
+  const playlistBtn = document.getElementById("playlistBtn");
+
+  const toast = document.getElementById("toast");
+
+  // Download state (remember which songs are downloaded)
+  let downloadState = {};
+  try {
+    downloadState = JSON.parse(localStorage.getItem("gvs_downloads") || "{}");
+  } catch (e) {
+    downloadState = {};
+  }
+
+  function saveDownloadState() {
+    localStorage.setItem("gvs_downloads", JSON.stringify(downloadState));
+  }
+
+  function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add("show");
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 2000);
+  }
+
   function renderLibrary() {
     libraryList.innerHTML = "";
     tracks.forEach((track, index) => {
-      const div = document.createElement("div");
-      div.className = "track";
-      div.onclick = () => playFromLibrary(index);
-      div.innerHTML = `
-        <div class="track-left">
-          <span class="track-title">${track.title}</span>
-          <span class="track-sub">${track.subtitle}</span>
-        </div>
-        <div class="track-index">${index + 1}</div>
-      `;
-      libraryList.appendChild(div);
+      const row = document.createElement("div");
+      row.className = "track";
+
+      const left = document.createElement("div");
+      left.className = "track-left";
+      const titleSpan = document.createElement("span");
+      titleSpan.className = "track-title";
+      titleSpan.textContent = track.title;
+      const subSpan = document.createElement("span");
+      subSpan.className = "track-sub";
+      subSpan.textContent = track.subtitle;
+      left.appendChild(titleSpan);
+      left.appendChild(subSpan);
+
+      const right = document.createElement("div");
+      right.className = "track-right";
+
+      const indexSpan = document.createElement("span");
+      indexSpan.className = "track-index";
+      indexSpan.textContent = index + 1;
+
+      const dlBtn = document.createElement("button");
+      dlBtn.className = "download-btn";
+      dlBtn.textContent = downloadState[index] ? "✓" : "↓";
+      if (downloadState[index]) {
+        dlBtn.classList.add("downloaded");
+      }
+
+      dlBtn.onclick = (e) => {
+        e.stopPropagation(); // don't start playing
+        downloadTrack(index);
+      };
+
+      right.appendChild(indexSpan);
+      right.appendChild(dlBtn);
+
+      row.appendChild(left);
+      row.appendChild(right);
+
+      row.onclick = () => playFromLibrary(index);
+
+      libraryList.appendChild(row);
     });
   }
 
@@ -975,7 +1015,6 @@
     });
   }
 
-  // --- PLAYER LOGIC ---
   function updatePlayPauseUI(isPlaying) {
     if (isPlaying) {
       playBtn.style.display = "none";
@@ -1000,10 +1039,25 @@
     ovTitle.textContent = track.title;
     ovSub.textContent = track.subtitle;
 
-    // Set poster images
     miniCover.style.backgroundImage = `url('${track.cover}')`;
     bigPoster.style.backgroundImage = `url('${track.cover}')`;
     overlayBackdrop.style.backgroundImage = `url('${track.cover}')`;
+
+    if ('mediaSession' in navigator) {
+      try {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: track.title,
+          artist: track.subtitle,
+          artwork: [
+            { src: track.cover, sizes: '512x512', type: 'image/jpeg' }
+          ]
+        });
+        navigator.mediaSession.setActionHandler('play', () => { audio.play(); updatePlayPauseUI(true); });
+        navigator.mediaSession.setActionHandler('pause', () => { audio.pause(); updatePlayPauseUI(false); });
+        navigator.mediaSession.setActionHandler('previoustrack', () => playPrev());
+        navigator.mediaSession.setActionHandler('nexttrack', () => playNext());
+      } catch(e) {}
+    }
   }
 
   function loadCurrentTrack(autoplay = true) {
@@ -1012,8 +1066,8 @@
     const track = tracks[trackIndex];
 
     setSongUI(track);
-
     audio.src = track.file;
+
     if (autoplay) {
       audio.play().then(() => {
         updatePlayPauseUI(true);
@@ -1049,7 +1103,6 @@
     loadCurrentTrack(true);
   }
 
-  // --- TIME & SEEKBARS ---
   function formatTime(sec) {
     if (isNaN(sec)) return "0:00";
     const m = Math.floor(sec / 60);
@@ -1058,7 +1111,7 @@
   }
 
   function updateSeekBarBackground(barElem, percent) {
-    barElem.style.background = `linear-gradient(to right, #ffffff 0%, #ffffff ${percent}%, #1f2937 ${percent}%, #1f2937 100%)`;
+    barElem.style.background = `linear-gradient(to right, #ffffff 0%, #a5f3fc ${percent}%, #1f2937 ${percent}%, #1f2937 100%)`;
   }
 
   audio.addEventListener("loadedmetadata", () => {
@@ -1082,7 +1135,6 @@
     ovSeekBar.value = percent;
     updateSeekBarBackground(ovSeekBar, percent);
 
-    // tonearm slight move
     tonearm.style.transform = `rotate(${18 + percent * 0.4}deg)`;
   });
 
@@ -1106,7 +1158,7 @@
     playNext();
   });
 
-  // --- MINI PLAYER EVENTS ---
+  // Mini player controls
   playBtn.onclick = (e) => {
     e.stopPropagation();
     if (!audio.src) {
@@ -1117,22 +1169,13 @@
       updatePlayPauseUI(true);
     }
   };
-
   pauseBtn.onclick = (e) => {
     e.stopPropagation();
     audio.pause();
     updatePlayPauseUI(false);
   };
-
-  nextBtn.onclick = (e) => {
-    e.stopPropagation();
-    playNext();
-  };
-
-  prevBtn.onclick = (e) => {
-    e.stopPropagation();
-    playPrev();
-  };
+  nextBtn.onclick = (e) => { e.stopPropagation(); playNext(); };
+  prevBtn.onclick = (e) => { e.stopPropagation(); playPrev(); };
 
   resetQueueBtn.onclick = () => {
     queue = tracks.map((_, i) => i);
@@ -1140,16 +1183,19 @@
     renderQueue();
   };
 
-  // Open full player when tapping mini-player background
+  // Open / close full player
   miniPlayer.addEventListener("click", () => {
     fullOverlay.classList.add("visible");
   });
-
   overlayBackBtn.addEventListener("click", () => {
     fullOverlay.classList.remove("visible");
   });
+  overlayQueueBtn.addEventListener("click", () => {
+    fullOverlay.classList.remove("visible");
+    queuePanel.scrollIntoView({ behavior: "smooth" });
+  });
 
-  // FULL OVERLAY CONTROLS
+  // Full player controls
   bigPlayBtn.onclick = () => {
     if (!audio.src) {
       currentQueueIndex = 0;
@@ -1159,14 +1205,43 @@
       updatePlayPauseUI(true);
     }
   };
-
   bigPauseBtn.onclick = () => {
     audio.pause();
     updatePlayPauseUI(false);
   };
-
   ovNextBtn.onclick = playNext;
   ovPrevBtn.onclick = playPrev;
+
+  // Download logic: real phone storage download
+  function downloadTrack(trackIndex) {
+    const track = tracks[trackIndex];
+    const link = document.createElement("a");
+    link.href = track.file;
+    // sanitize title for filename
+    const safeTitle = (track.title || "song").replace(/[^\w\s\-]/g, "").trim() || "song";
+    link.download = safeTitle + ".mp3";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    downloadState[trackIndex] = true;
+    saveDownloadState();
+    renderLibrary();
+    showToast("Download started. Check your Downloads folder.");
+  }
+
+  downloadBtn.onclick = () => {
+    if (!queue.length) {
+      alert("No song is selected to download.");
+      return;
+    }
+    const trackIndex = queue[currentQueueIndex];
+    downloadTrack(trackIndex);
+  };
+
+  sleepBtn.onclick = () => alert("Sleep timer fade-out will be added later.");
+  playlistBtn.onclick = () => alert("Custom playlists will be added later.");
 
   // INITIAL RENDER
   renderLibrary();
@@ -1175,6 +1250,5 @@
   updateSeekBarBackground(seekBar, 0);
   updateSeekBarBackground(ovSeekBar, 0);
 </script>
-
 </body>
 </html>
