@@ -1,1296 +1,309 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Listen by GVS – Neon Music App</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <title>Listen by GVS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    min-height: 100vh;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    color: #f9fafb;
-    overflow-x: hidden;
-    background: #020617;
-  }
-
-  /* Animated neon background */
-  .bg {
-    position: fixed;
-    inset: 0;
-    z-index: -3;
-    background: radial-gradient(circle at top, #0f172a, #020617 55%, #000 100%);
-  }
-  .bg-animate {
-    position: fixed;
-    inset: 0;
-    z-index: -2;
-    background:
-      radial-gradient(circle at 0% 0%, #22d3ee35, transparent 55%),
-      radial-gradient(circle at 100% 0%, #a855f735, transparent 55%),
-      radial-gradient(circle at 50% 100%, #f9731635, transparent 55%);
-    animation: hueShift 6s infinite linear;
-  }
-  @keyframes hueShift {
-    0%   { filter: hue-rotate(0deg);    opacity: 0.8; }
-    25%  { filter: hue-rotate(60deg);   opacity: 0.9; }
-    50%  { filter: hue-rotate(120deg);  opacity: 0.85; }
-    75%  { filter: hue-rotate(200deg);  opacity: 0.9; }
-    100% { filter: hue-rotate(320deg);  opacity: 0.8; }
-  }
-
-  h1 {
-    text-align: center;
-    padding: 18px 0 4px;
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    color: #22d3ee;
-    text-shadow: 0 0 18px #22d3ee;
-    text-transform: uppercase;
-    animation: titlePulse 2s infinite ease-in-out;
-  }
-  @keyframes titlePulse {
-    0%, 100% { transform: translateY(0); opacity: 0.9; }
-    50%      { transform: translateY(-2px); opacity: 1; }
-  }
-
-  .sub {
-    text-align: center;
-    font-size: 12px;
-    color: #cbd5f5;
-    margin-bottom: 14px;
-    opacity: 0.85;
-  }
-
-  .layout {
-    width: 94%;
-    max-width: 960px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    gap: 16px;
-    padding-bottom: 120px; /* space for bottom player */
-  }
-  @media (max-width: 780px) {
-    .layout {
-      grid-template-columns: 1fr;
-      padding-bottom: 140px;
+  <style>
+    /* ---------- GLOBAL ---------- */
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #0ff2, #020817 70%);
+      color: #fff;
+      overflow-x: hidden;
     }
-  }
 
-  .panel {
-    background: rgba(15, 23, 42, 0.94);
-    border-radius: 18px;
-    border: 1px solid #1f2937;
-    padding: 12px;
-    box-shadow: 0 0 18px #020617;
-    backdrop-filter: blur(16px);
-  }
-  .panel-title {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  .panel-sub {
-    font-size: 11px;
-    color: #9ca3af;
-    margin-bottom: 10px;
-  }
+    h1 {
+      text-align: center;
+      margin: 20px 0 5px;
+      color: #00eaff;
+      letter-spacing: 2px;
+    }
 
-  /* Song Library */
-  #libraryList { margin-top: 2px; }
-  .track {
-    padding: 10px;
-    border-radius: 14px;
-    background: radial-gradient(circle at 0 0, #020617, #020617);
-    border: 1px solid #334155;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: 0.18s ease;
-    position: relative;
-    overflow: hidden;
-  }
-  .track::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at top left, #22d3ee44, transparent 55%);
-    opacity: 0;
-    transition: opacity 0.18s ease;
-    pointer-events: none;
-  }
-  .track:hover::before { opacity: 1; }
-  .track:hover {
-    border-color: #22d3ee;
-    box-shadow: 0 0 14px #22d3ee88;
-    transform: translateY(-1px);
-  }
-  .track-left { display: flex; flex-direction: column; gap: 2px; }
-  .track-title { font-size: 14px; font-weight: 600; }
-  .track-sub { font-size: 11px; color: #94a3b8; }
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      opacity: 0.7;
+      margin-bottom: 20px;
+    }
 
-  .track-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-  .track-index {
-    font-size: 18px;
-    color: #22d3ee;
-    text-shadow: 0 0 10px #22d3ee99;
-  }
-  .download-btn {
-    font-size: 12px;
-    padding: 4px 8px;
-    border-radius: 999px;
-    border: 1px solid #334155;
-    background: #020617;
-    color: #e5e7eb;
-    cursor: pointer;
-    transition: 0.18s ease;
-  }
-  .download-btn:hover {
-    border-color: #22d3ee;
-    color: #22d3ee;
-    box-shadow: 0 0 8px #22d3ee66;
-  }
-  .download-btn.downloaded {
-    border-color: #22c55e;
-    color: #bbf7d0;
-    background: rgba(21, 128, 61, 0.2);
-    box-shadow: 0 0 10px #22c55e66;
-  }
+    /* ---------- LAYOUT ---------- */
+    .container {
+      display: flex;
+      gap: 20px;
+      padding: 0 20px 120px;
+      max-width: 1200px;
+      margin: auto;
+    }
 
-  /* Queue list */
-  .queue-list { list-style: none; margin-top: 4px; }
-  .queue-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-    padding: 7px 8px;
-    border-radius: 10px;
-    border: 1px solid #1f2933;
-    margin-bottom: 6px;
-    background: rgba(15, 23, 42, 0.96);
-    transition: 0.16s ease;
-  }
-  .queue-item:hover {
-    border-color: #22d3eeaa;
-    box-shadow: 0 0 10px #22d3ee55;
-  }
-  .queue-buttons button {
-    font-size: 11px;
-    padding: 2px 7px;
-    margin-left: 4px;
-    border-radius: 999px;
-    border: 1px solid #334155;
-    background: #020617;
-    color: #e5e7eb;
-    cursor: pointer;
-    transition: 0.18s ease;
-  }
-  .queue-buttons button:hover {
-    border-color: #22d3ee;
-    color: #22d3ee;
-    box-shadow: 0 0 8px #22d3ee66;
-  }
-  .queue-reset {
-    margin-top: 6px;
-    font-size: 11px;
-    border-radius: 999px;
-    padding: 5px 12px;
-    border: 1px solid #22d3eeaa;
-    background: radial-gradient(circle at 0 0, #0f172a, #020617);
-    color: #e0f2fe;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .queue-reset:hover { box-shadow: 0 0 12px #22d3eeaa; }
+    .panel {
+      flex: 1;
+      background: rgba(15, 25, 45, 0.6);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 0 25px rgba(0,234,255,0.12);
+      backdrop-filter: blur(12px);
+    }
 
-  /* Bottom mini-player */
-  .player {
-    position: fixed;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(96%, 860px);
-    background: radial-gradient(circle at 0 0, #020617, #020617f7);
-    border-radius: 20px;
-    border: 1px solid #22d3eeaa;
-    box-shadow: 0 0 20px #0ea5e966;
-    padding: 8px 12px 10px;
-    backdrop-filter: blur(18px);
-    cursor: pointer;
-  }
+    .panel h2 {
+      margin-top: 0;
+      color: #9ff;
+    }
 
-  .player-top {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
+    /* ---------- SONG LIST ---------- */
+    .song {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.35);
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-  .mini-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-  }
-  .mini-cover {
-    width: 32px;
-    height: 32px;
-    border-radius: 999px;
-    background-size: cover;
-    background-position: center;
-    background-color: #020617;
-    border: 1px solid #334155;
-    flex-shrink: 0;
-    position: relative;
-    overflow: hidden;
-  }
-  .mini-cover::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    box-shadow: 0 0 12px #22d3ee55;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-  .mini-cover.spin::after { opacity: 1; }
-  .mini-cover.spin {
-    animation: spinSlow 12s linear infinite;
-  }
-  @keyframes spinSlow {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-  }
+    .song:hover {
+      background: rgba(0,234,255,0.15);
+    }
 
-  .now-info span { display: block; }
-  .now-label {
-    font-size: 9px;
-    color: #38bdf8;
-    letter-spacing: 2px;
-  }
-  .now-title {
-    font-size: 14px;
-    font-weight: 700;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    max-width: 170px;
-  }
-  .now-sub {
-    font-size: 11px;
-    color: #94a3b8;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    max-width: 200px;
-  }
+    .song span {
+      font-size: 14px;
+      opacity: 0.8;
+    }
 
-  .controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    justify-content: center;
-    flex: 1;
-  }
+    /* ---------- PLAYER BAR ---------- */
+    .player {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      width: calc(100% - 40px);
+      max-width: 900px;
+      background: rgba(10,15,30,0.9);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 0 35px rgba(0,234,255,0.35);
+    }
 
-  .small-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 999px;
-    border: 1px solid #64748b;
-    background: #020617;
-    color: #e5e7eb;
-    font-size: 14px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.18s ease;
-  }
-  .small-btn:hover {
-    border-color: #22d3ee;
-    color: #22d3ee;
-    box-shadow: 0 0 10px #22d3ee88;
-    transform: translateY(-1px);
-  }
+    .player-title {
+      font-weight: bold;
+      color: #00eaff;
+      margin-bottom: 8px;
+    }
 
-  .play-btn,
-  .pause-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 999px;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.18s ease;
-  }
-  .play-btn {
-    background: #0ea5e9;
-    color: #f9fafb;
-    box-shadow: 0 0 20px #0ea5e9;
-  }
-  .pause-btn {
-    background: #22c55e;
-    color: #f9fafb;
-    box-shadow: 0 0 20px #22c55e;
-    display: none;
-  }
-  .play-btn:hover,
-  .pause-btn:hover {
-    transform: translateY(-1px) scale(1.04);
-  }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
 
-  .seek-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 6px;
-    font-size: 11px;
-    color: #9ca3af;
-  }
-  .seek-row input[type="range"] {
-    flex: 1;
-    -webkit-appearance: none;
-    appearance: none;
-    height: 5px;
-    border-radius: 999px;
-    background: #1f2937;
-    outline: none;
-    position: relative;
-    overflow: hidden;
-  }
-  .seek-row input[type="range"]::-webkit-slider-runnable-track {
-    height: 5px;
-    background: transparent;
-  }
-  .seek-row input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #22d3ee;
-    box-shadow: 0 0 10px #22d3ee;
-    cursor: pointer;
-    margin-top: -4.5px;
-    border: 2px solid #0f172a;
-  }
-  .seek-row input[type="range"]::-moz-range-track { height: 5px; background: transparent; }
-  .seek-row input[type="range"]::-moz-range-thumb {
-    width: 14px; height: 14px; border-radius: 50%;
-    background: #22d3ee; border: 2px solid #0f172a;
-    box-shadow: 0 0 10px #22d3ee; cursor: pointer;
-  }
+    .controls button {
+      background: #00eaff;
+      border: none;
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      font-size: 16px;
+      cursor: pointer;
+    }
 
-  @media (max-width: 600px) {
-    .player-top { flex-direction: column; align-items: flex-start; }
-    .controls { justify-content: flex-start; }
-  }
+    .controls button:hover {
+      box-shadow: 0 0 15px #00eaff;
+    }
 
-  audio { display: none; }
+    input[type="range"] {
+      flex: 1;
+    }
 
-  /* FULL PLAYER OVERLAY */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 20;
-    display: none;
-  }
-  .overlay.visible { display: block; }
+    /* ---------- SLEEP TIMER ---------- */
+    .sleep {
+      margin-top: 15px;
+    }
 
-  .overlay-backdrop {
-    position: absolute;
-    inset: 0;
-    background-position: center;
-    background-size: cover;
-    filter: blur(22px);
-    transform: scale(1.06);
-  }
-  .overlay-tint {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, #020617dd 0%, #020617f7 60%, #020617ff 100%);
-  }
+    .sleep button {
+      margin-right: 8px;
+      margin-top: 5px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: none;
+      background: #111;
+      color: #00eaff;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0,234,255,0.25);
+    }
 
-  .overlay-content {
-    position: relative;
-    z-index: 1;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 16px 14px 18px;
-    color: #f9fafb;
-  }
+    /* ---------- MODAL ---------- */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
 
-  .overlay-topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-  .ov-back-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 999px;
-    border: 1px solid #64748b;
-    background: #020617aa;
-    color: #e5e7eb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  .ov-top-right {
-    display: flex;
-    gap: 6px;
-  }
-  .ov-queue-btn,
-  .ov-small-icon {
-    font-size: 11px;
-    border-radius: 999px;
-    padding: 6px 10px;
-    background: #020617aa;
-    border: 1px solid #22d3eeaa;
-    color: #e0f2fe;
-    cursor: pointer;
-  }
+    .modal-box {
+      background: #0b1220;
+      padding: 25px;
+      border-radius: 18px;
+      text-align: center;
+      box-shadow: 0 0 30px #00eaff;
+    }
 
-  .overlay-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
+    .modal-box button {
+      margin: 10px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+    }
 
-  .poster-card {
-    margin-top: 10px;
-    padding: 14px;
-    border-radius: 22px;
-    background: rgba(15,23,42,0.85);
-    border: 1px solid #1f2937;
-    box-shadow: 0 0 18px #020617;
-    backdrop-filter: blur(18px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    max-width: 360px;
-    width: 100%;
-  }
+    .enable {
+      background: #00eaff;
+    }
 
-  .poster-wrapper {
-    position: relative;
-    width: 210px;
-    height: 210px;
-  }
-  .poster-circle {
-    width: 100%;
-    height: 100%;
-    border-radius: 999px;
-    background-size: cover;
-    background-position: center;
-    border: 4px solid #0f172a;
-    box-shadow: 0 0 30px #22d3ee88;
-    animation: spinDisc 18s linear infinite;
-    position: relative;
-    overflow: hidden;
-  }
-  @keyframes spinDisc {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-  }
-  .poster-circle.paused { animation-play-state: paused; }
-
-  .poster-center {
-    position: absolute;
-    inset: 50%;
-    transform: translate(-50%, -50%);
-    width: 46px;
-    height: 46px;
-    border-radius: 999px;
-    background: radial-gradient(circle at 30% 0, #e5e7eb, #020617);
-    border: 3px solid #0f172a;
-    box-shadow: inset 0 0 10px #020617;
-  }
-
-  .tonearm {
-    position: absolute;
-    width: 72px;
-    height: 72px;
-    right: -6px;
-    top: 12px;
-    transform-origin: left center;
-    transform: rotate(18deg);
-  }
-  .tonearm-line {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 60px;
-    height: 3px;
-    background: #e5e7ebcc;
-    border-radius: 999px;
-  }
-  .tonearm-head {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    width: 14px;
-    height: 24px;
-    background: #020617;
-    border-radius: 4px;
-    border: 2px solid #e5e7ebcc;
-    transform: translateY(-50%);
-  }
-
-  .overlay-title {
-    font-size: 18px;
-    font-weight: 700;
-    text-align: center;
-  }
-  .overlay-sub {
-    font-size: 12px;
-    color: #cbd5f5;
-    text-align: center;
-  }
-
-  .overlay-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: center;
-    width: 100%;
-    max-width: 380px;
-  }
-
-  .overlay-buttons-row {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
-  .big-play,
-  .big-pause {
-    width: 60px;
-    height: 60px;
-    border-radius: 999px;
-    border: none;
-    font-size: 26px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.2s ease;
-  }
-  .big-play {
-    background: #0ea5e9;
-    color: #f9fafb;
-    box-shadow: 0 0 26px #0ea5e9;
-  }
-  .big-pause {
-    background: #22c55e;
-    color: #f9fafb;
-    box-shadow: 0 0 26px #22c55e;
-    display: none;
-  }
-  .big-play:hover,
-  .big-pause:hover {
-    transform: scale(1.04) translateY(-1px);
-  }
-
-  .overlay-seek { width: 100%; }
-  .overlay-seek label {
-    font-size: 11px;
-    color: #9ca3af;
-  }
-  .overlay-seekbar {
-    margin-top: 4px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    color: #9ca3af;
-  }
-  .overlay-seekbar input[type="range"] {
-    flex: 1;
-    -webkit-appearance: none;
-    appearance: none;
-    height: 6px;
-    border-radius: 999px;
-    background: #1f2937;
-    outline: none;
-    overflow: hidden;
-  }
-  .overlay-seekbar input[type="range"]::-webkit-slider-runnable-track {
-    height: 6px;
-    background: transparent;
-  }
-  .overlay-seekbar input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #22d3ee;
-    border: 2px solid #020617;
-    box-shadow: 0 0 12px #22d3ee;
-    margin-top: -5px;
-    cursor: pointer;
-  }
-  .overlay-seekbar input[type="range"]::-moz-range-track {
-    height: 6px;
-    background: transparent;
-  }
-  .overlay-seekbar input[type="range"]::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #22d3ee;
-    border: 2px solid #020617;
-    box-shadow: 0 0 12px #22d3ee;
-    cursor: pointer;
-  }
-
-  .overlay-footer-text {
-    margin-top: 10px;
-    font-size: 11px;
-    color: #e5e7ebcc;
-    text-align: center;
-  }
-
-  /* Toast message */
-  .toast {
-    position: fixed;
-    left: 50%;
-    bottom: 70px;
-    transform: translateX(-50%);
-    background: rgba(15,23,42,0.96);
-    border-radius: 999px;
-    padding: 8px 16px;
-    font-size: 12px;
-    border: 1px solid #22c55eaa;
-    color: #bbf7d0;
-    box-shadow: 0 0 18px #22c55e66;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    z-index: 50;
-  }
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(-4px);
-  }
-</style>
+    .skip {
+      background: #333;
+      color: #fff;
+    }
+  </style>
 </head>
-
 <body>
-<div class="bg"></div>
-<div class="bg-animate"></div>
 
-<h1>Listen by GVS</h1>
-<p class="sub">Neon Music Player · Full Player · Queue · Rotating Posters · Downloads · Notification</p>
+  <h1>LISTEN BY GVS</h1>
+  <div class="subtitle">Neon Music Player · Queue · Sleep Timer · Notifications</div>
 
-<div class="layout">
-  <!-- LEFT: SONG LIBRARY -->
-  <section class="panel">
-    <div class="panel-title">All Songs</div>
-    <div class="panel-sub">Tap a song title to play · Use ↓ to download to phone storage.</div>
-    <div id="libraryList"></div>
-  </section>
+  <div class="container">
+    <div class="panel">
+      <h2>All Songs</h2>
 
-  <!-- RIGHT: QUEUE EDITOR -->
-  <section class="panel" id="queuePanel">
-    <div class="panel-title">Play Queue</div>
-    <div class="panel-sub">Use ↑ / ↓ to choose the order in which songs will play.</div>
-    <ul id="queueList" class="queue-list"></ul>
-    <button class="queue-reset" id="resetQueueBtn">
-      ⟳ Reset queue to original order
-    </button>
-  </section>
-</div>
-
-<!-- BOTTOM MINI PLAYER -->
-<div class="player" id="miniPlayer">
-  <div class="player-top">
-    <div class="mini-left">
-      <div class="mini-cover" id="miniCover"></div>
-      <div class="now-info">
-        <span class="now-label">NOW PLAYING</span>
-        <span class="now-title" id="nowTitle">No song selected</span>
-        <span class="now-sub" id="nowSub">Tap a song from the list to start</span>
+      <div class="song" onclick="playSong(0)">
+        <div>Powerhouse<br><span>Coolie Superstar</span></div>
       </div>
+
+      <div class="song" onclick="playSong(1)">
+        <div>Satranga<br><span>ANIMAL</span></div>
+      </div>
+
+      <div class="song" onclick="playSong(2)">
+        <div>Aavan Jaavan<br><span>WAR 2</span></div>
+      </div>
+
     </div>
 
-    <div class="controls" onclick="event.stopPropagation();">
-      <button class="small-btn" id="prevBtn">⏮</button>
-      <button class="play-btn" id="playBtn">▶</button>
-      <button class="pause-btn" id="pauseBtn">❚❚</button>
-      <button class="small-btn" id="nextBtn">⏭</button>
+    <div class="panel">
+      <h2>Sleep Timer</h2>
+      <div class="sleep">
+        <button onclick="setSleepTimer(5)">5 min</button>
+        <button onclick="setSleepTimer(10)">10 min</button>
+        <button onclick="setSleepTimer(30)">30 min</button>
+      </div>
     </div>
   </div>
 
-  <div class="seek-row" onclick="event.stopPropagation();">
-    <span id="currentTime">0:00</span>
-    <input type="range" id="seekBar" min="0" max="100" value="0" />
-    <span id="duration">0:00</span>
-  </div>
-</div>
-
-<!-- FULL PLAYER OVERLAY -->
-<div class="overlay" id="fullOverlay">
-  <div class="overlay-backdrop" id="overlayBackdrop"></div>
-  <div class="overlay-tint"></div>
-
-  <div class="overlay-content">
-    <div class="overlay-topbar">
-      <button class="ov-back-btn" id="overlayBackBtn">←</button>
-      <div class="ov-top-right">
-        <button class="ov-small-icon" id="downloadBtn">↓</button>
-        <button class="ov-small-icon" id="sleepBtn">⏰</button>
-        <button class="ov-small-icon" id="playlistBtn">＋</button>
-        <button class="ov-queue-btn" id="overlayQueueBtn">Queue</button>
-      </div>
-    </div>
-
-    <div class="overlay-main">
-      <div class="poster-card">
-        <div class="poster-wrapper">
-          <div class="poster-circle paused" id="bigPoster"></div>
-          <div class="poster-center"></div>
-          <div class="tonearm" id="tonearm">
-            <div class="tonearm-line"></div>
-            <div class="tonearm-head"></div>
-          </div>
-        </div>
-        <div class="overlay-title" id="ovTitle">No song selected</div>
-        <div class="overlay-sub" id="ovSub">Tap a song from the list to start</div>
-      </div>
-
-      <div class="overlay-controls">
-        <div class="overlay-buttons-row">
-          <button class="small-btn" id="ovPrevBtn">⏮</button>
-          <button class="big-play" id="bigPlayBtn">▶</button>
-          <button class="big-pause" id="bigPauseBtn">❚❚</button>
-          <button class="small-btn" id="ovNextBtn">⏭</button>
-        </div>
-
-        <div class="overlay-seek">
-          <label>Progress</label>
-          <div class="overlay-seekbar">
-            <span id="ovCurrentTime">0:00</span>
-            <input type="range" id="ovSeekBar" min="0" max="100" value="0" />
-            <span id="ovDuration">0:00</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="overlay-footer-text">
-        Developed by <strong>G Vedha Sai</strong>
-      </div>
+  <!-- PLAYER -->
+  <div class="player">
+    <div class="player-title" id="nowPlaying">Not Playing</div>
+    <div class="controls">
+      <button onclick="togglePlay()">▶</button>
+      <input type="range" id="seek" value="0">
     </div>
   </div>
-</div>
 
-<!-- HIDDEN AUDIO -->
-<audio id="audioPlayer"></audio>
+  <!-- AUDIO -->
+  <audio id="audio"></audio>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+  <!-- NOTIFICATION MODAL -->
+  <div class="modal" id="notifModal">
+    <div class="modal-box">
+      <h3>🔔 Enable Notifications?</h3>
+      <p>Get alerts when music stops or sleep timer ends.</p>
+      <button class="enable" id="enableNotif">Enable</button>
+      <button class="skip" id="skipNotif">Skip</button>
+    </div>
+  </div>
 
-<script>
-  // SONG DATA (YouTube posters)
-  const tracks = [
-    {
-      title: "Khaleja – Sada Siva (Epic BGM)",
-      subtitle: "Listen it by GVS",
-      file: "khaleja_sada_siva_epic_bgm.mp3",
-      cover: "https://img.youtube.com/vi/m4qKrVQ6TRw/hqdefault.jpg"
-    },
-    {
-      title: "Satranga",
-      subtitle: "From ANIMAL · Listen it by GVS",
-      file: "ANIMAL_ SATRANGA(Song) Ranbir Kapoor,RashmikaSandeep VArijit,Shreyas P,Siddharth-Garima Bhushan K.mp3",
-      cover: "https://img.youtube.com/vi/m4qKrVQ6TRw/hqdefault.jpg"
-    },
-    {
-      title: "Aavan Jaavan",
-      subtitle: "From WAR 2 · Listen it by GVS",
-      file: "Aavan Jaavan Song _ WAR 2 _ Hrithik Roshan, Kiara Advani _ Pritam, Arijit Singh, Nikhita _ Amitabh B [enjkcCdAlXc].mp3",
-      cover: "https://img.youtube.com/vi/enjkcCdAlXc/hqdefault.jpg"
-    },
-    {
-      title: "Humsafar",
-      subtitle: "Listen it by GVS",
-      file: "Humsafar Song _ Saiyaara _ Ahaan Panday _ Aneet Padda_ Sachet Tandon, Parampara Tandon, Irshad Kamil [D9DiMnlpFK8].mp3",
-      cover: "https://img.youtube.com/vi/D9DiMnlpFK8/hqdefault.jpg"
-    },
-    {
-      title: "Powerhouse",
-      subtitle: "Coolie Superstar · Listen it by GVS",
-      file: "Powerhouse - Video Song Coolie Superstar Rajinikanth Sun Pictures Lokesh Anirudh.mp3",
-      cover: "https://img.youtube.com/vi/6mWQq4VZKRU/hqdefault.jpg"
-    },
-    {
-      title: "Sarkaaru Raa",
-      subtitle: "Daaku Maharaaj · Listen it by GVS",
-      file: "Sarkaru Raa Lyric Video _ Daaku Maharaaj _ Nandamuri Balakrishna _ Bobby Kolli _ Thaman S [YB4U_RpbuQQ].mp3",
-      cover: "https://img.youtube.com/vi/YB4U_RpbuQQ/hqdefault.jpg"
-    },
-    {
-      title: "Sooreede",
-      subtitle: "Salaar · Listen it by GVS",
-      file: "Sooreede - Video Song _ Salaar _ Prabhas _ Prithviraj _ Prashanth Neel _ Ravi Basrur _ Hombale Films [2n7lsBRfmA0].mp3",
-      cover: "https://img.youtube.com/vi/2n7lsBRfmA0/hqdefault.jpg"
+  <script>
+    /* ---------- SONG DATA ---------- */
+    const songs = [
+      { title: "Powerhouse", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+      { title: "Satranga", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+      { title: "Aavan Jaavan", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
+    ];
+
+    const audio = document.getElementById("audio");
+    const nowPlaying = document.getElementById("nowPlaying");
+    const seek = document.getElementById("seek");
+
+    let currentSong = -1;
+    let sleepTimer = null;
+
+    /* ---------- PLAY ---------- */
+    function playSong(index) {
+      currentSong = index;
+      audio.src = songs[index].src;
+      audio.play();
+      nowPlaying.textContent = "Now Playing: " + songs[index].title;
     }
-  ];
 
-  // Queue is an array of track indexes
-  let queue = tracks.map((_, i) => i);
-  let currentQueueIndex = 0;
+    function togglePlay() {
+      if (audio.paused) audio.play();
+      else audio.pause();
+    }
 
-  const audio = document.getElementById("audioPlayer");
-
-  // DOM references
-  const libraryList = document.getElementById("libraryList");
-  const queueList = document.getElementById("queueList");
-  const resetQueueBtn = document.getElementById("resetQueueBtn");
-  const queuePanel = document.getElementById("queuePanel");
-
-  const miniPlayer = document.getElementById("miniPlayer");
-  const miniCover = document.getElementById("miniCover");
-  const nowTitle = document.getElementById("nowTitle");
-  const nowSub = document.getElementById("nowSub");
-  const playBtn = document.getElementById("playBtn");
-  const pauseBtn = document.getElementById("pauseBtn");
-  const nextBtn = document.getElementById("nextBtn");
-  const prevBtn = document.getElementById("prevBtn");
-  const seekBar = document.getElementById("seekBar");
-  const currentTimeEl = document.getElementById("currentTime");
-  const durationEl = document.getElementById("duration");
-
-  // Full overlay elements
-  const fullOverlay = document.getElementById("fullOverlay");
-  const overlayBackdrop = document.getElementById("overlayBackdrop");
-  const overlayBackBtn = document.getElementById("overlayBackBtn");
-  const overlayQueueBtn = document.getElementById("overlayQueueBtn");
-  const bigPoster = document.getElementById("bigPoster");
-  const tonearm = document.getElementById("tonearm");
-  const ovTitle = document.getElementById("ovTitle");
-  const ovSub = document.getElementById("ovSub");
-  const bigPlayBtn = document.getElementById("bigPlayBtn");
-  const bigPauseBtn = document.getElementById("bigPauseBtn");
-  const ovPrevBtn = document.getElementById("ovPrevBtn");
-  const ovNextBtn = document.getElementById("ovNextBtn");
-  const ovSeekBar = document.getElementById("ovSeekBar");
-  const ovCurrentTime = document.getElementById("ovCurrentTime");
-  const ovDuration = document.getElementById("ovDuration");
-
-  // Top-right icons
-  const downloadBtn = document.getElementById("downloadBtn");
-  const sleepBtn = document.getElementById("sleepBtn");
-  const playlistBtn = document.getElementById("playlistBtn");
-
-  const toast = document.getElementById("toast");
-
-  // Download state (remember which songs are downloaded)
-  let downloadState = {};
-  try {
-    downloadState = JSON.parse(localStorage.getItem("gvs_downloads") || "{}");
-  } catch (e) {
-    downloadState = {};
-  }
-
-  function saveDownloadState() {
-    localStorage.setItem("gvs_downloads", JSON.stringify(downloadState));
-  }
-
-  function showToast(message) {
-    toast.textContent = message;
-    toast.classList.add("show");
-    setTimeout(() => {
-      toast.classList.remove("show");
-    }, 2000);
-  }
-
-  // RENDER LIBRARY
-  function renderLibrary() {
-    libraryList.innerHTML = "";
-    tracks.forEach((track, index) => {
-      const row = document.createElement("div");
-      row.className = "track";
-
-      const left = document.createElement("div");
-      left.className = "track-left";
-      const titleSpan = document.createElement("span");
-      titleSpan.className = "track-title";
-      titleSpan.textContent = track.title;
-      const subSpan = document.createElement("span");
-      subSpan.className = "track-sub";
-      subSpan.textContent = track.subtitle;
-      left.appendChild(titleSpan);
-      left.appendChild(subSpan);
-
-      const right = document.createElement("div");
-      right.className = "track-right";
-
-      const indexSpan = document.createElement("span");
-      indexSpan.className = "track-index";
-      indexSpan.textContent = index + 1;
-
-      const dlBtn = document.createElement("button");
-      dlBtn.className = "download-btn";
-      dlBtn.textContent = downloadState[index] ? "✓" : "↓";
-      if (downloadState[index]) {
-        dlBtn.classList.add("downloaded");
-      }
-
-      dlBtn.onclick = (e) => {
-        e.stopPropagation(); // don't start playing
-        downloadTrack(index);
-      };
-
-      right.appendChild(indexSpan);
-      right.appendChild(dlBtn);
-
-      row.appendChild(left);
-      row.appendChild(right);
-
-      row.onclick = () => playFromLibrary(index);
-
-      libraryList.appendChild(row);
+    /* ---------- SEEK ---------- */
+    audio.addEventListener("timeupdate", () => {
+      seek.max = audio.duration || 0;
+      seek.value = audio.currentTime;
     });
-  }
 
-  function renderQueue() {
-    queueList.innerHTML = "";
-    queue.forEach((trackIndex, position) => {
-      const track = tracks[trackIndex];
-      const li = document.createElement("li");
-      li.className = "queue-item";
+    seek.oninput = () => audio.currentTime = seek.value;
 
-      const label = document.createElement("span");
-      label.textContent = `${position + 1}. ${track.title}`;
+    /* ---------- SLEEP TIMER ---------- */
+    function setSleepTimer(min) {
+      if (sleepTimer) clearTimeout(sleepTimer);
 
-      const btnWrap = document.createElement("div");
-      btnWrap.className = "queue-buttons";
-
-      const upBtn = document.createElement("button");
-      upBtn.textContent = "↑";
-      upBtn.onclick = () => {
-        if (position <= 0) return;
-        [queue[position - 1], queue[position]] = [queue[position], queue[position - 1]];
-        renderQueue();
-      };
-
-      const downBtn = document.createElement("button");
-      downBtn.textContent = "↓";
-      downBtn.onclick = () => {
-        if (position >= queue.length - 1) return;
-        [queue[position + 1], queue[position]] = [queue[position], queue[position + 1]];
-        renderQueue();
-      };
-
-      btnWrap.appendChild(upBtn);
-      btnWrap.appendChild(downBtn);
-
-      li.appendChild(label);
-      li.appendChild(btnWrap);
-      queueList.appendChild(li);
-    });
-  }
-
-  // MEDIA SESSION HELPERS (Notification bar)
-  function setupMediaSession(track, isPlaying) {
-    if (!('mediaSession' in navigator)) return;
-
-    try {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: track.title,
-        artist: track.subtitle,
-        artwork: [
-          { src: track.cover, sizes: '512x512', type: 'image/jpeg' }
-        ]
-      });
-
-      navigator.mediaSession.setActionHandler('play', () => {
-        audio.play();
-        updatePlayPauseUI(true);
-      });
-      navigator.mediaSession.setActionHandler('pause', () => {
+      sleepTimer = setTimeout(() => {
         audio.pause();
-        updatePlayPauseUI(false);
+
+        if (Notification.permission === "granted") {
+          new Notification("⏰ Sleep Timer", {
+            body: "Music stopped automatically."
+          });
+        }
+
+        alert("Sleep timer ended. Music stopped.");
+      }, min * 60000);
+
+      alert("Sleep timer set for " + min + " minutes");
+    }
+
+    /* ---------- NOTIFICATION PERMISSION ---------- */
+    window.onload = () => {
+      if ("Notification" in window && Notification.permission === "default") {
+        document.getElementById("notifModal").style.display = "flex";
+      }
+    };
+
+    document.getElementById("enableNotif").onclick = () => {
+      Notification.requestPermission().then(p => {
+        if (p === "granted") {
+          new Notification("🎵 Listen by GVS", {
+            body: "Notifications enabled!"
+          });
+        }
+        document.getElementById("notifModal").style.display = "none";
       });
-      navigator.mediaSession.setActionHandler('previoustrack', () => {
-        playPrev();
-      });
-      navigator.mediaSession.setActionHandler('nexttrack', () => {
-        playNext();
-      });
+    };
 
-      navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
-    } catch (e) {
-      // ignore if not fully supported
-    }
-  }
+    document.getElementById("skipNotif").onclick = () => {
+      document.getElementById("notifModal").style.display = "none";
+    };
+  </script>
 
-  function clearMediaSession() {
-    if (!('mediaSession' in navigator)) return;
-    try {
-      navigator.mediaSession.playbackState = 'none';
-    } catch (e) {}
-  }
-
-  function updatePlayPauseUI(isPlaying) {
-    if (isPlaying) {
-      playBtn.style.display = "none";
-      pauseBtn.style.display = "inline-flex";
-      bigPlayBtn.style.display = "none";
-      bigPauseBtn.style.display = "flex";
-      bigPoster.classList.remove("paused");
-      miniCover.classList.add("spin");
-    } else {
-      playBtn.style.display = "inline-flex";
-      pauseBtn.style.display = "none";
-      bigPlayBtn.style.display = "flex";
-      bigPauseBtn.style.display = "none";
-      bigPoster.classList.add("paused");
-      miniCover.classList.remove("spin");
-    }
-
-    // Notification behavior: only show when playing
-    if (audio.src) {
-      const trackIndex = queue[currentQueueIndex];
-      const track = tracks[trackIndex];
-      setupMediaSession(track, isPlaying);
-    } else {
-      clearMediaSession();
-    }
-  }
-
-  function setSongUI(track) {
-    nowTitle.textContent = track.title;
-    nowSub.textContent = track.subtitle;
-    ovTitle.textContent = track.title;
-    ovSub.textContent = track.subtitle;
-
-    miniCover.style.backgroundImage = `url('${track.cover}')`;
-    bigPoster.style.backgroundImage = `url('${track.cover}')`;
-    overlayBackdrop.style.backgroundImage = `url('${track.cover}')`;
-  }
-
-  function loadCurrentTrack(autoplay = true) {
-    if (queue.length === 0) return;
-    const trackIndex = queue[currentQueueIndex];
-    const track = tracks[trackIndex];
-
-    setSongUI(track);
-    audio.src = track.file;
-
-    if (autoplay) {
-      audio.play().then(() => {
-        updatePlayPauseUI(true);
-      }).catch(() => {
-        updatePlayPauseUI(false);
-      });
-    } else {
-      updatePlayPauseUI(false);
-    }
-  }
-
-  function playFromLibrary(libraryIndex) {
-    const positionInQueue = queue.indexOf(libraryIndex);
-    if (positionInQueue !== -1) {
-      currentQueueIndex = positionInQueue;
-    } else {
-      queue.push(libraryIndex);
-      currentQueueIndex = queue.length - 1;
-      renderQueue();
-    }
-    loadCurrentTrack(true);
-  }
-
-  function playNext() {
-    if (queue.length === 0) return;
-    currentQueueIndex = (currentQueueIndex + 1) % queue.length;
-    loadCurrentTrack(true);
-  }
-
-  function playPrev() {
-    if (queue.length === 0) return;
-    currentQueueIndex = (currentQueueIndex - 1 + queue.length) % queue.length;
-    loadCurrentTrack(true);
-  }
-
-  function formatTime(sec) {
-    if (isNaN(sec)) return "0:00";
-    const m = Math.floor(sec / 60);
-    const s = Math.floor(sec % 60);
-    return `${m}:${s.toString().padStart(2, "0")}`;
-  }
-
-  function updateSeekBarBackground(barElem, percent) {
-    barElem.style.background = `linear-gradient(to right, #ffffff 0%, #a5f3fc ${percent}%, #1f2937 ${percent}%, #1f2937 100%)`;
-  }
-
-  audio.addEventListener("loadedmetadata", () => {
-    durationEl.textContent = formatTime(audio.duration);
-    ovDuration.textContent = formatTime(audio.duration);
-  });
-
-  audio.addEventListener("timeupdate", () => {
-    if (!audio.duration) return;
-    const current = audio.currentTime;
-    const duration = audio.duration;
-    const percent = (current / duration) * 100;
-
-    currentTimeEl.textContent = formatTime(current);
-    durationEl.textContent = formatTime(duration);
-    seekBar.value = percent;
-    updateSeekBarBackground(seekBar, percent);
-
-    ovCurrentTime.textContent = formatTime(current);
-    ovDuration.textContent = formatTime(duration);
-    ovSeekBar.value = percent;
-    updateSeekBarBackground(ovSeekBar, percent);
-
-    tonearm.style.transform = `rotate(${18 + percent * 0.4}deg)`;
-  });
-
-  audio.addEventListener("play", () => {
-    updatePlayPauseUI(true);
-  });
-
-  audio.addEventListener("pause", () => {
-    updatePlayPauseUI(false);
-  });
-
-  seekBar.addEventListener("input", () => {
-    if (!audio.duration) return;
-    const percent = seekBar.value;
-    const newTime = (percent / 100) * audio.duration;
-    audio.currentTime = newTime;
-    updateSeekBarBackground(seekBar, percent);
-  });
-
-  ovSeekBar.addEventListener("input", () => {
-    if (!audio.duration) return;
-    const percent = ovSeekBar.value;
-    const newTime = (percent / 100) * audio.duration;
-    audio.currentTime = newTime;
-    updateSeekBarBackground(ovSeekBar, percent);
-  });
-
-  audio.addEventListener("ended", () => {
-    playNext();
-  });
-
-  // Mini player controls
-  playBtn.onclick = (e) => {
-    e.stopPropagation();
-    if (!audio.src) {
-      currentQueueIndex = 0;
-      loadCurrentTrack(true);
-    } else {
-      audio.play();
-      updatePlayPauseUI(true);
-    }
-  };
-  pauseBtn.onclick = (e) => {
-    e.stopPropagation();
-    audio.pause();
-    updatePlayPauseUI(false);
-  };
-  nextBtn.onclick = (e) => { e.stopPropagation(); playNext(); };
-  prevBtn.onclick = (e) => { e.stopPropagation(); playPrev(); };
-
-  resetQueueBtn.onclick = () => {
-    queue = tracks.map((_, i) => i);
-    currentQueueIndex = 0;
-    renderQueue();
-  };
-
-  // Open / close full player
-  miniPlayer.addEventListener("click", () => {
-    fullOverlay.classList.add("visible");
-  });
-  overlayBackBtn.addEventListener("click", () => {
-    fullOverlay.classList.remove("visible");
-  });
-  overlayQueueBtn.addEventListener("click", () => {
-    fullOverlay.classList.remove("visible");
-    queuePanel.scrollIntoView({ behavior: "smooth" });
-  });
-
-  // Full player controls
-  bigPlayBtn.onclick = () => {
-    if (!audio.src) {
-      currentQueueIndex = 0;
-      loadCurrentTrack(true);
-    } else {
-      audio.play();
-      updatePlayPauseUI(true);
-    }
-  };
-  bigPauseBtn.onclick = () => {
-    audio.pause();
-    updatePlayPauseUI(false);
-  };
-  ovNextBtn.onclick = playNext;
-  ovPrevBtn.onclick = playPrev;
-
-  // Download logic: real phone storage download
-  function downloadTrack(trackIndex) {
-    const track = tracks[trackIndex];
-    const link = document.createElement("a");
-    link.href = track.file;
-    const safeTitle = (track.title || "song").replace(/[^\w\s\-]/g, "").trim() || "song";
-    link.download = safeTitle + ".mp3";
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    downloadState[trackIndex] = true;
-    saveDownloadState();
-    renderLibrary();
-    showToast("Download started. Check your Downloads folder.");
-  }
-
-  downloadBtn.onclick = () => {
-    if (!queue.length) {
-      alert("No song is selected to download.");
-      return;
-    }
-    const trackIndex = queue[currentQueueIndex];
-    downloadTrack(trackIndex);
-  };
-
-  sleepBtn.onclick = () => alert("Sleep timer fade-out will be added later.");
-  playlistBtn.onclick = () => alert("Custom playlists will be added later.");
-
-  // INITIAL RENDER
-  renderLibrary();
-  renderQueue();
-  updatePlayPauseUI(false);
-  updateSeekBarBackground(seekBar, 0);
-  updateSeekBarBackground(ovSeekBar, 0);
-</script>
 </body>
 </html>
